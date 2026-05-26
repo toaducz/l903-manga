@@ -89,7 +89,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Nếu không có token hợp lệ và refresh thất bại thì xóa token & đẩy về self-host
   const url = request.nextUrl.clone()
   url.pathname = '/self-host'
   const response = NextResponse.redirect(url)
