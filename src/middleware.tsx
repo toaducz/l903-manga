@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { jwtVerify, importSPKI } from 'jose'
+import { jwtVerify, importSPKI, decodeJwt } from 'jose'
 import { formatKey } from '@/codebase/utils/format'
 
 const BYPASS_PREFIXES = ['/_next/', '/api/']
@@ -37,12 +37,16 @@ export async function middleware(request: NextRequest) {
   // Thử refresh token nếu access token hết hạn hoặc không có
   if (!isValid && refreshToken) {
     try {
+      const body = new URLSearchParams()
+      body.append('refreshToken', refreshToken)
+
       const res = await fetch(`${process.env.ENDPOINT_URL}/auth/refresh`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'x-api-key': process.env.SCERET_KEY || ''
         },
-        body: JSON.stringify({ refreshToken })
+        body: body.toString()
       })
 
       const data = await res.json()
@@ -51,15 +55,30 @@ export async function middleware(request: NextRequest) {
         accessToken = data.accessToken
         isValid = true
 
-        // Tạo response mới để có thể set cookie
-        const response = NextResponse.next()
+        // Pass the new access token to the downstream Server Components
+        const requestHeaders = new Headers(request.headers)
+        request.cookies.set('accessToken', accessToken as string)
+        requestHeaders.set('cookie', request.cookies.toString())
+
+        const response = NextResponse.next({
+          request: {
+            headers: requestHeaders
+          }
+        })
+
+        // Decode to get exact expiration from backend
+        const accessPayload = decodeJwt(accessToken as string)
+
+        // Also set the cookie for the browser
         response.cookies.set('accessToken', accessToken as string, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
           path: '/',
-          maxAge: 15 * 60 // 15 phút
+          expires: accessPayload.exp ? new Date(accessPayload.exp * 1000) : undefined
         })
         return response
+      } else {
+        console.error('Refresh token API returned error:', data)
       }
     } catch (refreshError) {
       console.error('Refresh token failed:', refreshError)

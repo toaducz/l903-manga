@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, EffectFade } from 'swiper/modules'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { getNewManga } from '@/codebase/api/manga/search-manga'
 import Loading from '../status/Loading'
@@ -56,9 +57,9 @@ const SlideMangaCardFullWidth: React.FC<Props> = ({ id }) => {
 
           return (
             <SwiperSlide key={manga.id + id}>
-              <div
-                className='relative w-full h-full cursor-pointer group'
-                onClick={() => router.push(`/manga-detail/${manga.id}`)}
+              <Link
+                href={`/manga-detail/${manga.id}`}
+                className='block relative w-full h-full cursor-pointer group'
               >
                 {/* Background Art */}
                 <Image
@@ -67,7 +68,7 @@ const SlideMangaCardFullWidth: React.FC<Props> = ({ id }) => {
                   alt={'title' + title}
                   fill
                   priority
-                  className='object-cover object-top group-hover:scale-105'
+                  className='object-cover object-top group-hover:scale-105 transition-transform duration-500'
                 />
 
                 {/* Overlays */}
@@ -112,17 +113,17 @@ const SlideMangaCardFullWidth: React.FC<Props> = ({ id }) => {
                       </p>
 
                       <div className='flex flex-wrap items-center gap-3 sm:gap-4'>
-                        <button className='flex-1 sm:flex-none px-6 sm:px-8 py-2.5 sm:py-3 cursor-pointer bg-primary text-primary-foreground text-xs sm:text-sm font-black rounded-full transition-transform duration-200 active:scale-[0.98] whitespace-nowrap'>
+                        <span className='inline-flex items-center justify-center flex-1 sm:flex-none px-6 sm:px-8 py-2.5 sm:py-3 cursor-pointer bg-primary text-primary-foreground text-xs sm:text-sm font-black rounded-full transition-transform duration-200 active:scale-[0.98] whitespace-nowrap'>
                           Đọc Ngay
-                        </button>
-                        <button className='flex-1 sm:flex-none px-6 sm:px-8 py-2.5 sm:py-3 cursor-pointer bg-white/10 backdrop-blur-md border border-white/10 text-white text-xs sm:text-sm font-bold rounded-full transition-colors duration-200 hover:bg-white/20 whitespace-nowrap'>
+                        </span>
+                        <span className='inline-flex items-center justify-center flex-1 sm:flex-none px-6 sm:px-8 py-2.5 sm:py-3 cursor-pointer bg-white/10 backdrop-blur-md border border-white/10 text-white text-xs sm:text-sm font-bold rounded-full transition-colors duration-200 hover:bg-white/20 whitespace-nowrap'>
                           Chi tiết
-                        </button>
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             </SwiperSlide>
           )
         })}

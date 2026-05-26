@@ -1,9 +1,8 @@
-import Image from 'next/image'
+import Link from 'next/link'
 import React, { useState } from 'react'
 import { Manga } from '@/codebase/api/paginate'
-import { useRouter } from 'next/navigation'
-// import { motion } from 'framer-motion'
 import { MangaStatus, ContentRating } from '@/codebase/constants/enums'
+import Image from 'next/image'
 
 interface MangaCardProps {
   manga: Manga
@@ -11,8 +10,7 @@ interface MangaCardProps {
 }
 
 const MangaItems: React.FC<MangaCardProps> = ({ manga, isResponsive = true }) => {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(true)
+  // const [isLoading, setIsLoading] = useState(true)
 
   const altTitle = manga.attributes.altTitles.find(t => t.en)?.en || manga.attributes.altTitles.find(t => t.ja)?.ja
   const title = manga.attributes.altTitles.find(t => t.vi)?.vi ?? manga.attributes.title.en ?? altTitle
@@ -22,21 +20,14 @@ const MangaItems: React.FC<MangaCardProps> = ({ manga, isResponsive = true }) =>
   const coverImageUrl = coverArtFileName ? `https://uploads.mangadex.org/covers/${manga.id}/${coverArtFileName}` : ''
   const proxyImageUrl = `/api/image?url=${encodeURIComponent(coverImageUrl)}`
 
-  const handleClick = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (manga.id.trim()) {
-      router.push(`/manga-detail/${manga.id.trim()}`)
-    }
-  }
-
   const status = MangaStatus[manga.attributes.status as keyof typeof MangaStatus] || manga.attributes.status
   const rating =
     ContentRating[manga.attributes.contentRating as keyof typeof ContentRating] || manga.attributes.contentRating
 
   return (
-    <div
-      onClick={handleClick}
-      className={`relative glass-card rounded-2xl shadow-xl cursor-pointer group overflow-hidden border-white/5 w-full hover:border-primary/30 transition-transform duration-200 active:scale-[0.98] ${isResponsive ? 'flex flex-row sm:flex-col sm:aspect-[2/3] sm:hover:-translate-y-1 sm:hover:scale-[1.01]' : 'flex flex-col aspect-[2/3] hover:-translate-y-1'
+    <Link
+      href={`/manga-detail/${manga.id.trim()}`}
+      className={`block relative glass-card rounded-2xl shadow-xl cursor-pointer group overflow-hidden border-white/5 w-full hover:border-primary/30 transition-transform duration-200 active:scale-[0.98] ${isResponsive ? 'flex flex-row sm:flex-col sm:aspect-[2/3] sm:hover:-translate-y-1 sm:hover:scale-[1.01]' : 'flex flex-col aspect-[2/3] hover:-translate-y-1'
         }`}
     >
       {/* Art Container */}
@@ -49,13 +40,15 @@ const MangaItems: React.FC<MangaCardProps> = ({ manga, isResponsive = true }) =>
         <Image
           unoptimized
           src={proxyImageUrl}
-          alt={`Ảnh bìa truyện ${title}`}
+          alt={`bg-${title}`}
           fill
           sizes='(max-width: 768px) 100vw, 300px'
-          className={`object-cover transition-transform duration-200 group-hover:scale-105 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
-          onLoad={() => setIsLoading(false)}
+          loading='lazy'
+          className={`object-cover transition-transform duration-200 group-hover:scale-105 `}
+          placeholder='blur'
+          blurDataURL='@/assets/image/mie.jpg'
         />
-        {isLoading && <div className='absolute inset-0 bg-slate-800 animate-pulse' />}
+        {/* {isLoading && <div className='absolute inset-0 bg-slate-800 animate-pulse' />} */}
 
         {/* Rating Badge - Only on poster mode for better space */}
         <div className={`absolute top-2 right-2 z-10 ${isResponsive ? 'hidden sm:block' : 'block'}`}>
@@ -111,7 +104,7 @@ const MangaItems: React.FC<MangaCardProps> = ({ manga, isResponsive = true }) =>
 
       {/* Subtle border overlay */}
       <div className='absolute inset-0 border border-white/5 rounded-2xl pointer-events-none group-hover:border-primary/30 transition-colors duration-200 z-20' />
-    </div>
+    </Link>
   )
 }
 

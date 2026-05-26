@@ -1,10 +1,11 @@
 'use client'
 
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense } from 'react'
 import { useParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { getMangaById } from '@/codebase/api/manga/get-manga-by-id'
 import MangaDetailPage from '@/components/views/manga-detail-page'
+import MangaDetailMobile from '@/app/manga-detail/components/manga-detail-mobile'
 import Loading from '@/components/status/Loading'
 import Error from '@/components/status/error'
 
@@ -20,18 +21,7 @@ function MangaDetailContent() {
   const params = useParams()
   const id = params.id as string
 
-  const [isVisible, setIsVisible] = useState(false)
-
-  const { data: manga, isFetching, isSuccess, isError } = useQuery(getMangaById({ id }))
-
-  useEffect(() => {
-    if (isSuccess) {
-      const timer = setTimeout(() => {
-        setIsVisible(true)
-      }, 10)
-      return () => clearTimeout(timer)
-    }
-  }, [isSuccess])
+  const { data: manga, isFetching, isError } = useQuery(getMangaById({ id }))
 
   if (isFetching) return <Loading />
 
@@ -41,15 +31,14 @@ function MangaDetailContent() {
     return <Error message='Không tìm thấy truyện' />
   }
 
-  // if(isSuccess) console.log(manga?.data)
-
   return (
-    <div
-      className={`transition-all duration-500 ease-in-out transform bg-black ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-30 translate-y-2'
-      }`}
-    >
-      <MangaDetailPage manga={manga.data} />
+    <div className="bg-black">
+      <div className="hidden md:block">
+        <MangaDetailPage manga={manga.data} />
+      </div>
+      <div className="block md:hidden">
+        <MangaDetailMobile manga={manga.data} />
+      </div>
     </div>
   )
 }

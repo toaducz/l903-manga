@@ -12,8 +12,7 @@ import { FiArrowRight } from 'react-icons/fi'
 
 /* ─────────────────────────── Mini Poster Card ─────────────────────────── */
 function MiniPoster({ manga }: { manga: Manga }) {
-  const router = useRouter()
-  const [loaded, setLoaded] = useState(false)
+  // const [loaded, setLoaded] = useState(false)
 
   const title =
     manga.attributes.altTitles.find(t => t.vi)?.vi ??
@@ -28,24 +27,25 @@ function MiniPoster({ manga }: { manga: Manga }) {
     : ''
 
   return (
-    <motion.div
-      whileHover={{ y: -4, scale: 1.03 }}
-      whileTap={{ scale: 0.97 }}
-      onClick={() => router.push(`/manga-detail/${manga.id}`)}
-      className='relative aspect-[2/3] rounded-xl overflow-hidden cursor-pointer group border border-white/5 hover:border-white/20 transition-colors bg-slate-900'
+    <Link
+      href={`/manga-detail/${manga.id}`}
+      className='block relative aspect-[2/3] rounded-xl overflow-hidden cursor-pointer group border border-white/5 hover:border-white/20 transition-all duration-200 hover:-translate-y-1 hover:scale-[1.03] active:scale-[0.97] bg-slate-900'
     >
       {imgUrl && (
         <Image
           unoptimized
           src={imgUrl}
-          alt={`Ảnh bìa truyện ${title}`}
+          alt={`bg-${title}`}
           fill
           sizes='150px'
-          className={`object-cover transition-all duration-500 group-hover:scale-110 ${loaded ? 'opacity-100' : 'opacity-0'}`}
-          onLoad={() => setLoaded(true)}
+          loading='lazy'
+          className={`object-cover transition-all duration-500 group-hover:scale-110`}
+          // onLoad={() => setLoaded(true)}
+          placeholder='blur'
+          blurDataURL='@/assets/image/mie.jpg'
         />
       )}
-      {!loaded && <div className='absolute inset-0 bg-slate-800 animate-pulse' />}
+      {/* {!loaded && <div className='absolute inset-0 bg-slate-800 animate-pulse' />} */}
 
       {/* Gradient scrim + title */}
       <div className='absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-2.5'>
@@ -53,7 +53,7 @@ function MiniPoster({ manga }: { manga: Manga }) {
           {title}
         </p>
       </div>
-    </motion.div>
+    </Link>
   )
 }
 
@@ -184,7 +184,7 @@ export default function GenreCollectionCard({
             <div className='absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent' />
           </div>
         )}
-        
+
         <div className={`absolute inset-0 bg-gradient-to-br ${t.glow} via-transparent to-transparent opacity-40 pointer-events-none`} />
 
         {/* Content Section */}
@@ -203,7 +203,7 @@ export default function GenreCollectionCard({
                 <p className='text-base md:text-lg text-gray-400 font-medium leading-relaxed'>{description}</p>
               )}
             </div>
-            
+
             {filterHref && (
               <Link
                 href={filterHref}

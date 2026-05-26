@@ -23,7 +23,8 @@ export async function GET(req: NextRequest) {
         'User-Agent': 'L903-Manga',
         Referer: 'https://mangadex.org' // Để vượt qua hotlink protection
       },
-      cache: 'no-store' // Tránh cache ảo gây lỗi ảnh
+      cache: 'force-cache', // Cache trên server Next.js
+      next: { revalidate: 86400 } // Revalidate sau 24h
     })
 
     if (!res.ok) {
@@ -37,7 +38,7 @@ export async function GET(req: NextRequest) {
       status: 200,
       headers: {
         'Content-Type': contentType,
-        'Cache-Control': 'public, max-age=86400',
+        'Cache-Control': 'public, max-age=31536000, immutable',
         'Content-Length': buffer.byteLength.toString()
       }
     })

@@ -138,7 +138,7 @@ const MangaDetailPage: React.FC<MangaDetailPageProps> = ({ manga }) => {
       <div
         className='
           relative 
-          h-[400px] 
+          h-[300px] 
           md:h-[450px] 
           lg:h-[350px] 
           w-full

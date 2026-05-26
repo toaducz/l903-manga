@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { SubmitButton } from '@/components/common/submit-button'
+import { decodeJwt } from 'jose'
 
 type LoginSuccessResponse = {
     status: true;
@@ -57,18 +58,22 @@ export default async function LoginPage({
             if ('status' in data && data.status === true) {
                 const cookieStore = await cookies()
 
+                // Decode tokens to extract exact expiration dates
+                const accessPayload = decodeJwt(data.accessToken)
+                const refreshPayload = decodeJwt(data.refreshToken)
+
                 cookieStore.set('accessToken', data.accessToken, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
                     path: '/',
-                    maxAge: 15 * 60 // 15 minutes
+                    expires: accessPayload.exp ? new Date(accessPayload.exp * 1000) : undefined
                 })
 
                 cookieStore.set('refreshToken', data.refreshToken, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
                     path: '/',
-                    maxAge: 7 * 24 * 60 * 60 // 7 days
+                    expires: refreshPayload.exp ? new Date(refreshPayload.exp * 1000) : undefined
                 })
             } else if ('success' in data && data.success === false) {
                 let errorMessage = data.message || 'Đăng nhập thất bại'
