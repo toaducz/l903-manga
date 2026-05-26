@@ -2,7 +2,7 @@ import Image from 'next/image'
 import React, { useState } from 'react'
 import { Manga } from '@/codebase/api/paginate'
 import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
+// import { motion } from 'framer-motion'
 import { MangaStatus, ContentRating } from '@/codebase/constants/enums'
 
 interface MangaCardProps {
@@ -42,8 +42,8 @@ const MangaItems: React.FC<MangaCardProps> = ({ manga, isResponsive = true }) =>
       {/* Art Container */}
       <div
         className={`relative bg-slate-900 overflow-hidden shrink-0 ${isResponsive
-            ? 'w-24 h-auto aspect-[2/3] sm:w-full sm:h-full sm:absolute sm:inset-0'
-            : 'absolute inset-0 w-full h-full'
+          ? 'w-24 h-auto aspect-[2/3] sm:w-full sm:h-full sm:absolute sm:inset-0'
+          : 'absolute inset-0 w-full h-full'
           }`}
       >
         <Image

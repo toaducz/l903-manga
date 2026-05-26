@@ -10,7 +10,7 @@ import { getNewManga } from '@/codebase/api/manga/search-manga'
 import Loading from '../status/Loading'
 import Error from '../status/error'
 import { MangaStatus } from '@/codebase/constants/enums'
-import { motion } from 'framer-motion'
+// import { motion } from 'framer-motion'
 
 import 'swiper/css'
 import 'swiper/css/pagination'

@@ -1,4 +1,3 @@
-// components/SlideMangaCard.tsx
 'use client'
 
 import React from 'react'
@@ -13,7 +12,7 @@ import { useRouter } from 'next/navigation'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
-import { motion } from 'framer-motion'
+// import { motion } from 'framer-motion'
 
 interface Props {
   id?: string[]
