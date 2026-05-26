@@ -4,7 +4,7 @@ import React from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, EffectFade } from 'swiper/modules'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { getNewManga } from '@/codebase/api/manga/search-manga'
@@ -22,7 +22,7 @@ interface Props {
 }
 
 const SlideMangaCardFullWidth: React.FC<Props> = ({ id }) => {
-  const router = useRouter()
+  // const router = useRouter()
   const { data: newManga, isLoading, isError } = useQuery(getNewManga({ limit: 5 }))
 
   if (isLoading)

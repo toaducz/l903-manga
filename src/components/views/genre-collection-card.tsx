@@ -2,15 +2,14 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 import { getTopMangaByTagId } from '@/codebase/api/manga/get-top-manga-by-tag-id'
 import { Manga } from '@/codebase/api/paginate'
-import { motion } from 'framer-motion'
+// import { motion } from 'framer-motion'
 import { FiArrowRight } from 'react-icons/fi'
 
-/* ─────────────────────────── Mini Poster Card ─────────────────────────── */
 function MiniPoster({ manga }: { manga: Manga }) {
   // const [loaded, setLoaded] = useState(false)
 

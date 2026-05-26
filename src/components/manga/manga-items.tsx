@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React from 'react'
 import { Manga } from '@/codebase/api/paginate'
 import { MangaStatus, ContentRating } from '@/codebase/constants/enums'
 import Image from 'next/image'
