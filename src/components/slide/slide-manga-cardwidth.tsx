@@ -78,10 +78,7 @@ const SlideMangaCardFullWidth: React.FC<Props> = ({ id }) => {
                 <div className='absolute inset-0 flex flex-col justify-end p-6 sm:p-12 md:p-16 lg:p-24'>
                   <div className='flex flex-col md:flex-row items-end md:items-center gap-6 sm:gap-10 max-w-7xl mx-auto w-full'>
                     {/* Side Cover Art for Desktop */}
-                    <motion.div
-                      initial={{ opacity: 0, x: -50, scale: 0.9 }}
-                      whileInView={{ opacity: 1, x: 0, scale: 1 }}
-                      transition={{ duration: 0.8, ease: 'easeOut' }}
+                    <div
                       className='hidden md:block w-56 lg:w-72 aspect-[2/3] relative rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex-shrink-0 border border-white/20'
                     >
                       <Image
@@ -92,16 +89,13 @@ const SlideMangaCardFullWidth: React.FC<Props> = ({ id }) => {
                         className='object-cover'
                       />
                       <div className='absolute inset-0 bg-gradient-to-t from-black/40 to-transparent' />
-                    </motion.div>
+                    </div>
 
-                    <motion.div
-                      initial={{ opacity: 0, x: 30 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.6, delay: 0.2 }}
+                    <div
                       className='flex-1 w-full max-w-3xl'
                     >
                       <div className='flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4'>
-                        <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[10px] font-black tracking-widest uppercase rounded-full bg-primary text-primary-foreground neon-glow'>
+                        <span className='px-2.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[10px] font-black tracking-widest uppercase rounded-full bg-primary text-primary-foreground'>
                           Featured
                         </span>
                         <span className='text-[10px] sm:text-xs font-bold text-white/60 uppercase tracking-widest'>
@@ -118,14 +112,14 @@ const SlideMangaCardFullWidth: React.FC<Props> = ({ id }) => {
                       </p>
 
                       <div className='flex flex-wrap items-center gap-3 sm:gap-4'>
-                        <button className='flex-1 sm:flex-none px-6 sm:px-8 py-2.5 sm:py-3 cursor-pointer bg-primary text-primary-foreground text-xs sm:text-sm font-black rounded-full transition-all hover:scale-105 active:scale-95 neon-glow whitespace-nowrap'>
+                        <button className='flex-1 sm:flex-none px-6 sm:px-8 py-2.5 sm:py-3 cursor-pointer bg-primary text-primary-foreground text-xs sm:text-sm font-black rounded-full transition-transform duration-200 active:scale-[0.98] whitespace-nowrap'>
                           Đọc Ngay
                         </button>
-                        <button className='flex-1 sm:flex-none px-6 sm:px-8 py-2.5 sm:py-3 cursor-pointer bg-white/10 backdrop-blur-md border border-white/10 text-white text-xs sm:text-sm font-bold rounded-full transition-all hover:bg-white/20 whitespace-nowrap'>
+                        <button className='flex-1 sm:flex-none px-6 sm:px-8 py-2.5 sm:py-3 cursor-pointer bg-white/10 backdrop-blur-md border border-white/10 text-white text-xs sm:text-sm font-bold rounded-full transition-colors duration-200 hover:bg-white/20 whitespace-nowrap'>
                           Chi tiết
                         </button>
                       </div>
-                    </motion.div>
+                    </div>
                   </div>
                 </div>
               </div>

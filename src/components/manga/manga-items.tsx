@@ -34,21 +34,17 @@ const MangaItems: React.FC<MangaCardProps> = ({ manga, isResponsive = true }) =>
     ContentRating[manga.attributes.contentRating as keyof typeof ContentRating] || manga.attributes.contentRating
 
   return (
-    <motion.div
-      whileHover={{ y: isResponsive ? 0 : -8, scale: isResponsive ? 1.02 : 1 }}
-      whileTap={{ scale: 0.98 }}
+    <div
       onClick={handleClick}
-      className={`relative glass-card rounded-2xl shadow-xl transition-all duration-500 cursor-pointer group overflow-hidden border-white/5 w-full hover:neon-glow hover:border-primary/30 ${
-        isResponsive ? 'flex flex-row sm:flex-col sm:aspect-[2/3]' : 'flex flex-col aspect-[2/3]'
-      }`}
+      className={`relative glass-card rounded-2xl shadow-xl cursor-pointer group overflow-hidden border-white/5 w-full hover:border-primary/30 transition-transform duration-200 active:scale-[0.98] ${isResponsive ? 'flex flex-row sm:flex-col sm:aspect-[2/3] sm:hover:-translate-y-1 sm:hover:scale-[1.01]' : 'flex flex-col aspect-[2/3] hover:-translate-y-1'
+        }`}
     >
       {/* Art Container */}
       <div
-        className={`relative bg-slate-900 overflow-hidden shrink-0 ${
-          isResponsive
+        className={`relative bg-slate-900 overflow-hidden shrink-0 ${isResponsive
             ? 'w-24 h-auto aspect-[2/3] sm:w-full sm:h-full sm:absolute sm:inset-0'
             : 'absolute inset-0 w-full h-full'
-        }`}
+          }`}
       >
         <Image
           unoptimized
@@ -56,7 +52,7 @@ const MangaItems: React.FC<MangaCardProps> = ({ manga, isResponsive = true }) =>
           alt={`Ảnh bìa truyện ${title}`}
           fill
           sizes='(max-width: 768px) 100vw, 300px'
-          className={`object-cover group-hover:scale-110 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+          className={`object-cover transition-transform duration-200 group-hover:scale-105 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
           onLoad={() => setIsLoading(false)}
         />
         {isLoading && <div className='absolute inset-0 bg-slate-800 animate-pulse' />}
@@ -89,9 +85,8 @@ const MangaItems: React.FC<MangaCardProps> = ({ manga, isResponsive = true }) =>
 
       {/* Content Area - Desktop/Poster Overlay */}
       <div
-        className={`absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent flex-col justify-end p-4 ${
-          isResponsive ? 'hidden sm:flex' : 'flex'
-        }`}
+        className={`absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent flex-col justify-end p-4 ${isResponsive ? 'hidden sm:flex' : 'flex'
+          }`}
       >
         <div className='space-y-1.5 z-10'>
           <h3
@@ -115,8 +110,8 @@ const MangaItems: React.FC<MangaCardProps> = ({ manga, isResponsive = true }) =>
       </div>
 
       {/* Subtle border overlay */}
-      <div className='absolute inset-0 border border-white/5 rounded-2xl pointer-events-none group-hover:border-primary/30 transition-colors z-20' />
-    </motion.div>
+      <div className='absolute inset-0 border border-white/5 rounded-2xl pointer-events-none group-hover:border-primary/30 transition-colors duration-200 z-20' />
+    </div>
   )
 }
 

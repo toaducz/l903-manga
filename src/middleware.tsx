@@ -1,24 +1,82 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { jwtVerify, importSPKI } from 'jose'
+import { formatKey } from '@/codebase/utils/format'
 
 const BYPASS_PREFIXES = ['/_next/', '/api/']
-const BYPASS_EXACT = ['/self-host', '/favicon.ico', '/robots.txt', '/sitemap.xml']
+const BYPASS_EXACT = ['/self-host', '/favicon.ico', '/robots.txt', '/login']
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   if (process.env.DISABLE_MIDDLEWARE === 'true') {
     return NextResponse.next()
   }
 
   const { pathname } = request.nextUrl
 
-  // Cho qua các route nội bộ và static files
   if (BYPASS_EXACT.includes(pathname) || BYPASS_PREFIXES.some(prefix => pathname.startsWith(prefix))) {
     return NextResponse.next()
   }
 
-  // Redirect tất cả các route còn lại về trang self-host
+  let accessToken = request.cookies.get('accessToken')?.value
+  const refreshToken = request.cookies.get('refreshToken')?.value
+  let isValid = false
+
+  if (accessToken) {
+    try {
+      const publicKeyStr = process.env.JWT_PUBLIC || ''
+      if (publicKeyStr) {
+        const formattedKey = formatKey(publicKeyStr, 'PUBLIC')
+        const publicKey = await importSPKI(formattedKey, 'RS256')
+        await jwtVerify(accessToken, publicKey)
+        isValid = true
+      }
+    } catch (error) {
+      console.error('JWT validation failed in middleware:', error)
+    }
+  }
+
+  // Thử refresh token nếu access token hết hạn hoặc không có
+  if (!isValid && refreshToken) {
+    try {
+      const res = await fetch(`${process.env.ENDPOINT_URL}/auth/refresh`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ refreshToken })
+      })
+
+      const data = await res.json()
+
+      if (res.ok && data.status && data.accessToken) {
+        accessToken = data.accessToken
+        isValid = true
+
+        // Tạo response mới để có thể set cookie
+        const response = NextResponse.next()
+        response.cookies.set('accessToken', accessToken as string, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          path: '/',
+          maxAge: 15 * 60 // 15 phút
+        })
+        return response
+      }
+    } catch (refreshError) {
+      console.error('Refresh token failed:', refreshError)
+    }
+  }
+
+  if (isValid) {
+    return NextResponse.next()
+  }
+
+  // Nếu không có token hợp lệ và refresh thất bại thì xóa token & đẩy về self-host
   const url = request.nextUrl.clone()
   url.pathname = '/self-host'
-  return NextResponse.redirect(url)
+  const response = NextResponse.redirect(url)
+  response.cookies.delete('accessToken')
+  response.cookies.delete('refreshToken')
+  return response
 }
 
 export const config = {

@@ -23,7 +23,7 @@ export default function AutoRedirectNotice() {
     }, 1000)
 
     timerRef.current = setTimeout(() => {
-      router.replace('/homepage')
+      router.replace('/')
     }, 5000)
 
     return () => {

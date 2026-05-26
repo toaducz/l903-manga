@@ -15,8 +15,8 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
     return <main className='min-h-screen bg-background'>{children}</main>
   }
 
-  const isHomePage = pathname === '/'
-  const hideNavbar = isReaderPage || isDetailPage || isHomePage
+  const isLandingPage = pathname === '/homepage' || pathname === '/login'
+  const hideNavbar = isReaderPage || isDetailPage || isLandingPage
 
   return (
     <>

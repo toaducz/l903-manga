@@ -49,3 +49,38 @@ export const formatDate = (dateString: string) => {
     timeZone: 'Asia/Ho_Chi_Minh'
   }).format(date)
 }
+
+export const formatKey = (
+  keyStr: string,
+  type: 'PRIVATE' | 'PUBLIC',
+) => {
+  // Lấy phần base64 thật
+  const rawBase64 = keyStr
+    // bỏ header/footer
+    .replace(/-----BEGIN [A-Z ]+-----/g, '')
+    .replace(/-----END [A-Z ]+-----/g, '')
+
+    // bỏ text rác
+    .replace(/PRIVATE:/gi, '')
+    .replace(/PUBLIC:/gi, '')
+
+    // bỏ literal \n
+    .replace(/\\n/g, '')
+
+    // bỏ newline thật
+    .replace(/\r/g, '')
+    .replace(/\n/g, '')
+
+    // bỏ toàn bộ whitespace
+    .replace(/\s+/g, '')
+    .trim();
+
+  // wrap lại chuẩn PEM
+  const chunks = rawBase64.match(/.{1,64}/g) || [];
+
+  return [
+    `-----BEGIN ${type} KEY-----`,
+    ...chunks,
+    `-----END ${type} KEY-----`,
+  ].join('\n');
+};

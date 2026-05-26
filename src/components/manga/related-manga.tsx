@@ -40,7 +40,7 @@ export default function RelatedManga({ ids }: RelatedMangaProps) {
   if (currentIds.length === 0) {
     return (
       <div className='w-full py-20 flex flex-col items-center justify-center glass-card rounded-3xl border-dashed border-white/10'>
-        <p className='text-gray-500 font-bold uppercase tracking-widest text-sm'>No related manga found</p>
+        <p className='text-gray-500 font-bold uppercase tracking-widest text-sm'>Không có kết quả</p>
       </div>
     )
   }
@@ -57,11 +57,10 @@ export default function RelatedManga({ ids }: RelatedMangaProps) {
             <button
               key={r.id}
               onClick={() => setSelectedRating(r.id as 'all' | 'hide-pornographic')}
-              className={`px-6 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer ${
-                selectedRating === r.id
+              className={`px-6 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer ${selectedRating === r.id
                   ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
                   : 'text-gray-400 hover:text-white'
-              }`}
+                }`}
             >
               {r.label}
             </button>

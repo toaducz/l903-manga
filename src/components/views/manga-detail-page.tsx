@@ -82,7 +82,7 @@ const MangaDetailPage: React.FC<MangaDetailPageProps> = ({ manga }) => {
         <motion.button
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          onClick={() => router.push('/homepage')}
+          onClick={() => router.back()}
           className='p-3 glass-card rounded-full text-white pointer-events-auto hover:bg-white/20 transition-all active:scale-90 cursor-pointer'
         >
           <FiArrowLeft size={24} />
@@ -270,9 +270,8 @@ const MangaDetailPage: React.FC<MangaDetailPageProps> = ({ manga }) => {
               <div className='glass-card p-8 rounded-[2rem] relative overflow-hidden group border-white/5 shadow-2xl'>
                 <div className='relative z-10 space-y-6'>
                   <div
-                    className={`prose prose-invert max-w-none text-gray-300 font-medium leading-[1.8] text-lg transition-all duration-500 ${
-                      !isExpanded ? 'line-clamp-5' : ''
-                    }`}
+                    className={`prose prose-invert max-w-none text-gray-300 font-medium leading-[1.8] text-lg transition-all duration-500 ${!isExpanded ? 'line-clamp-5' : ''
+                      }`}
                   >
                     {isTranslate ? (
                       <ReactMarkdown>{translatedDescription}</ReactMarkdown>
@@ -347,9 +346,8 @@ const MangaDetailPage: React.FC<MangaDetailPageProps> = ({ manga }) => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as MangaSortBy)}
-                className={`pb-6 text-xs font-black tracking-[0.3em] transition-all relative cursor-pointer ${
-                  activeTab === tab.id ? 'text-primary' : 'text-gray-500 hover:text-white'
-                }`}
+                className={`pb-6 text-xs font-black tracking-[0.3em] transition-all relative cursor-pointer ${activeTab === tab.id ? 'text-primary' : 'text-gray-500 hover:text-white'
+                  }`}
               >
                 {tab.label}
                 {activeTab === tab.id && (

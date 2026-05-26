@@ -40,15 +40,14 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 inset-x-0 z-[200] transition-all duration-500 px-4 md:px-8 py-6 ${
-          isScrolled ? 'bg-background/80 backdrop-blur-xl border-b border-white/5 py-4' : 'bg-transparent'
-        }`}
+        className={`fixed top-0 inset-x-0 z-[200] transition-all duration-500 px-4 md:px-8 py-6 ${isScrolled ? 'bg-background/80 backdrop-blur-xl border-b border-white/5 py-4' : 'bg-transparent'
+          }`}
       >
         <div className='max-w-screen-2xl mx-auto flex items-center justify-between'>
           {/* Logo */}
           <div className='flex items-center gap-8'>
             <Link
-              href='/homepage'
+              href='/'
               className='text-2xl font-display font-black text-white tracking-tighter hover:scale-105 transition-transform'
             >
               L903<span className='text-primary neon-glow'>MANGA</span>
@@ -60,9 +59,8 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all hover:bg-white/5 whitespace-nowrap ${
-                    pathname === link.href ? 'text-primary bg-primary/10' : 'text-gray-400'
-                  }`}
+                  className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all hover:bg-white/5 whitespace-nowrap ${pathname === link.href ? 'text-primary bg-primary/10' : 'text-gray-400'
+                    }`}
                 >
                   {link.label}
                 </Link>

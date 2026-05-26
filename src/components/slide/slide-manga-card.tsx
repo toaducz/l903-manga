@@ -55,14 +55,14 @@ const SlideMangaCard: React.FC<Props> = ({ id, publicationDemographic }) => {
         className='pb-4 pt-25'
         autoplay={{ delay: 5000, disableOnInteraction: false }}
         style={{ display: 'flex', justifyContent: 'center' }}
-        // breakpoints={{
-        //   0: {
-        //     slidesPerView: 1,
-        //   },
-        //   768: {
-        //     slidesPerView: 'auto',
-        //   },
-        // }}
+      // breakpoints={{
+      //   0: {
+      //     slidesPerView: 1,
+      //   },
+      //   768: {
+      //     slidesPerView: 'auto',
+      //   },
+      // }}
       >
         {newManga?.data.map(manga => (
           <SwiperSlide key={manga.id} style={{ width: '300px' }}>
@@ -71,17 +71,15 @@ const SlideMangaCard: React.FC<Props> = ({ id, publicationDemographic }) => {
         ))}
       </Swiper>
       <div className='text-left mt-4'>
-        <motion.button
+        <button
           onClick={handleClick}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className='inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-blue-700 text-white rounded-lg hover:bg-blue-200 hover:text-blue-700 transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'
+          className='inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-blue-700 text-white rounded-lg transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] hover:bg-blue-200 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'
         >
           Xem thêm
           <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
             <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M9 5l7 7-7 7' />
           </svg>
-        </motion.button>
+        </button>
       </div>
     </div>
   )
