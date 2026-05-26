@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { SubmitButton } from '@/components/common/submit-button'
 
 type LoginSuccessResponse = {
     status: true;
@@ -133,12 +134,7 @@ export default async function LoginPage({
                     </div>
 
                     <div>
-                        <button
-                            type="submit"
-                            className="group relative flex w-full justify-center rounded-lg border border-transparent bg-blue-600 px-4 py-3 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 cursor-pointer"
-                        >
-                            Đăng nhập
-                        </button>
+                        <SubmitButton />
                     </div>
                 </form>
             </div>
