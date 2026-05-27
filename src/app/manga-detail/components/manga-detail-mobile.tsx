@@ -5,7 +5,7 @@ import { Manga } from '@/codebase/api/paginate'
 import Image from 'next/image'
 import Link from 'next/link'
 import { translateText } from '@/codebase/utils/translate'
-import { MangaStatus, OriginalLanguage, ContentRating, getLanguageName } from '@/codebase/constants/enums'
+import { MangaStatus, OriginalLanguage, ContentRating } from '@/codebase/constants/enums'
 import { getAuthorById } from '@/codebase/api/author/get-author-by-id'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
@@ -17,6 +17,7 @@ import { getChaptersByMangaId } from '@/codebase/api/manga/get-chapter'
 import RelatedManga from '@/components/manga/related-manga'
 import { FiArrowLeft, FiShare2, FiInfo, FiHome } from 'react-icons/fi'
 import { copyToClipboard } from '@/codebase/utils/copy-to-clipboard'
+import { saveReaderContext } from '@/codebase/utils/reader-context'
 
 interface MangaDetailMobileProps {
   manga: Manga
@@ -170,7 +171,14 @@ const MangaDetailMobile: React.FC<MangaDetailMobileProps> = ({ manga }) => {
             className='flex-1 py-3 bg-primary text-primary-foreground font-black rounded-xl active:scale-[0.98] transition-transform text-xs tracking-widest uppercase shadow-lg'
             onClick={() => {
               if (firstChapterId) {
-                router.push(`/reader/${firstChapterId}?mangaId=${manga.id}&lang=${getLanguageName(lang)}&langFilter=${lang}&langValue=${lang}&chapterId=${firstChapterId}`)
+                saveReaderContext({
+                  mangaId: manga.id,
+                  offset: 0,
+                  langFilterValue: [lang],
+                  langValue: lang,
+                  order: 'desc'
+                })
+                router.push(`/reader/${firstChapterId}`)
               }
             }}
           >

@@ -1,7 +1,7 @@
 'use client'
 
 import { Suspense, useState, useEffect, useMemo } from 'react'
-import { useParams, useSearchParams } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { getChapterImages } from '@/codebase/api/manga/get-chapter-images'
 import Loading from '@/components/status/Loading'
@@ -9,14 +9,15 @@ import { ImageWithLoading } from '@/components/image/image-with-loading'
 import Error from '@/components/status/error'
 import MangaChaptersList from '@/components/manga/manga-chapter-list'
 import ScrollToBottomButton from '@/components/layout/scroll/scroll-to-bottom'
-import { getChaptersByMangaId } from '@/codebase/api/manga/get-chapter'
+import { getChaptersByMangaId, getChapterById } from '@/codebase/api/manga/get-chapter'
 import ChapterNavButton from '@/components/manga/chapter-navigation'
 import { useRouter } from 'next/navigation'
 import { saveReadingHistory } from '@/codebase/utils/local-storage'
-import { Chapter } from '@/codebase/api/manga/get-chapter'
 import { getMangaById } from '@/codebase/api/manga/get-manga-by-id'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiMenu, FiChevronLeft, FiSettings, FiX, FiSun, FiMaximize } from 'react-icons/fi'
+import { getReaderContext, ReaderContext } from '@/codebase/utils/reader-context'
+import { getLanguageName } from '@/codebase/constants/enums'
 
 export default function ChapterReaderPage() {
   return (
@@ -29,23 +30,36 @@ export default function ChapterReaderPage() {
 function ReaderContent() {
   const router = useRouter()
   const params = useParams()
-  const searchParams = useSearchParams()
+  const id = params.id as string
 
+  const [context, setContext] = useState<ReaderContext | null>(null)
+  const [isContextLoaded, setIsContextLoaded] = useState(false)
   const [showControls, setShowControls] = useState(true)
   const [showChapters, setShowChapters] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [brightness, setBrightness] = useState(100)
 
-  const offset = Number(searchParams.get('offset') ?? 0)
-  const id = params.id as string
-  const mangaId = searchParams.get('mangaId') ?? ''
-  const chapterId = searchParams.get('chapterId') ?? ''
-  const number = searchParams.get('number') ?? 'Oneshot'
-  const lang = searchParams.get('lang') ?? ''
-  const langFilterValue = searchParams.get('langFilter') ?? ['vi', 'en']
-  const langValue = searchParams.get('langValue') ?? 'all'
-  const order = searchParams.get('order') ?? 'desc'
+  useEffect(() => {
+    setContext(getReaderContext())
+    setIsContextLoaded(true)
+  }, [])
+
+  const { data: chapterDetail, isLoading: isLoadingChapterDetail } = useQuery({
+    ...getChapterById(id),
+    enabled: !!id
+  })
+
+  const number = chapterDetail?.data?.attributes?.chapter ?? 'Oneshot'
+  const lang = getLanguageName(chapterDetail?.data?.attributes?.translatedLanguage ?? '') ?? ''
+  const mangaIdFromChapter =
+    chapterDetail?.data?.relationships?.find(r => r.type === 'manga')?.id ?? ''
+
+  const mangaId = context?.mangaId || mangaIdFromChapter
+  const offset = Number(context?.offset ?? 0)
+  const langFilterValue = context?.langFilterValue ?? (chapterDetail ? [chapterDetail.data.attributes.translatedLanguage] : ['vi', 'en'])
+  const langValue = context?.langValue ?? (chapterDetail ? chapterDetail.data.attributes.translatedLanguage : 'all')
+  const order = context?.order ?? 'desc'
 
   const {
     data: images,
@@ -54,33 +68,37 @@ function ReaderContent() {
     isError,
     isSuccess
   } = useQuery({
-    queryKey: ['chapter-images', id, offset],
+    queryKey: ['chapter-images', id],
     queryFn: () => getChapterImages(id),
     enabled: !!id
   })
 
-  const { data: chaptersData } = useQuery(
-    getChaptersByMangaId({
+  const { data: chaptersData } = useQuery({
+    ...getChaptersByMangaId({
       id: mangaId,
       lang: Array.isArray(langFilterValue) ? langFilterValue : [langFilterValue],
       order: order,
       offset: offset
-    })
-  )
+    }),
+    enabled: !!mangaId
+  })
 
-  const { data: manga } = useQuery(getMangaById({ id: mangaId }))
+  const { data: manga } = useQuery({
+    ...getMangaById({ id: mangaId }),
+    enabled: !!mangaId
+  })
 
   const title = useMemo(
     () =>
-      manga?.data.attributes.altTitles.find(t => t.vi)?.vi ??
-      manga?.data.attributes.altTitles.find(t => t.en)?.en ??
-      manga?.data.attributes.altTitles.find(t => t.ja)?.ja,
+      manga?.data?.attributes?.altTitles.find(t => t.vi)?.vi ??
+      manga?.data?.attributes?.altTitles.find(t => t.en)?.en ??
+      manga?.data?.attributes?.altTitles.find(t => t.ja)?.ja,
     [manga]
   )
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [chapterId])
+  }, [id])
 
   useEffect(() => {
     let lastScrollY = window.scrollY
@@ -102,21 +120,21 @@ function ReaderContent() {
         lastScrollY = currentScrollY
       }
     }
-    
+
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [showControls, showSettings, showChapters])
 
   useEffect(() => {
-    if (mangaId && chapterId && chaptersData?.data?.length && title) {
-      saveReadingHistory(mangaId, chapterId, chaptersData?.data as Chapter[], title, number, lang)
+    if (mangaId && id && chaptersData?.data?.length && title) {
+      saveReadingHistory(mangaId, id, chaptersData.data, title, number, lang)
     }
-  }, [mangaId, chapterId, chaptersData, title, number, lang])
+  }, [mangaId, id, chaptersData, title, number, lang])
 
   const { prevChapter, nextChapter } = useMemo(() => {
-    if (!chaptersData?.data || !chapterId) return { prevChapter: null, nextChapter: null }
+    if (!chaptersData?.data || !id) return { prevChapter: null, nextChapter: null }
     const chapters = chaptersData.data
-    const currentIndex = chapters.findIndex(ch => ch.id === chapterId)
+    const currentIndex = chapters.findIndex(ch => ch.id === id)
     if (currentIndex === -1) return { prevChapter: null, nextChapter: null }
 
     if (order === 'desc') {
@@ -130,11 +148,11 @@ function ReaderContent() {
       nextChapter: currentIndex < chapters.length - 1 ? chapters[currentIndex + 1] : null,
       prevChapter: currentIndex > 0 ? chapters[currentIndex - 1] : null
     }
-  }, [chaptersData, chapterId, order])
+  }, [chaptersData, id, order])
 
-  if (isLoading) return <Loading />
+  if (isLoading || !isContextLoaded || isLoadingChapterDetail) return <Loading />
   if (isError || error) return <Error />
-  if (!chaptersData?.data?.length && isSuccess) return <Error message='Không tìm thấy chapter!' />
+  if (!chaptersData?.data?.length && isSuccess && !!mangaId) return <Error message='Không tìm thấy chapter!' />
 
   return (
     <div className='bg-black min-h-screen'>
@@ -259,9 +277,8 @@ function ReaderContent() {
               <div className='flex items-center gap-4'>
                 <button
                   onClick={() => setShowSettings(!showSettings)}
-                  className={`p-3 rounded-full transition-all cursor-pointer ${
-                    showSettings ? 'bg-primary text-primary-foreground' : 'text-white hover:bg-white/10'
-                  }`}
+                  className={`p-3 rounded-full transition-all cursor-pointer ${showSettings ? 'bg-primary text-primary-foreground' : 'text-white hover:bg-white/10'
+                    }`}
                 >
                   <FiSettings size={22} />
                 </button>
@@ -270,9 +287,8 @@ function ReaderContent() {
                     setShowSettings(false)
                     setShowChapters(!showChapters)
                   }}
-                  className={`p-3 rounded-full transition-all cursor-pointer ${
-                    showChapters ? 'bg-primary text-primary-foreground' : 'text-white hover:bg-white/10'
-                  }`}
+                  className={`p-3 rounded-full transition-all cursor-pointer ${showChapters ? 'bg-primary text-primary-foreground' : 'text-white hover:bg-white/10'
+                    }`}
                 >
                   <FiMenu size={22} />
                 </button>
@@ -381,7 +397,7 @@ function ReaderContent() {
               <MangaChaptersList
                 mangaId={mangaId}
                 offsetParams={offset}
-                chapterId={chapterId}
+                chapterId={id}
                 langFilterValue={Array.isArray(langFilterValue) ? langFilterValue : [langFilterValue]}
                 langValue={langValue}
                 order={order}

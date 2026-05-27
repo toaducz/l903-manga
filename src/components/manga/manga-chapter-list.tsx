@@ -13,6 +13,7 @@ import Pagination from '../common/pagination'
 import { motion } from 'framer-motion'
 import { FiArrowUp, FiArrowDown } from 'react-icons/fi'
 import Link from 'next/link'
+import { saveReaderContext } from '@/codebase/utils/reader-context'
 
 interface MangaChaptersListProps {
   mangaId: string
@@ -127,13 +128,16 @@ const MangaChaptersList: React.FC<MangaChaptersListProps> = ({
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.03 }}
                 key={item.id}
-                onClick={() =>
-                  router.push(
-                    `/reader/${item.id}?mangaId=${mangaId}&offset=${localOffset}&chapterId=${item.id}&number=${item.attributes.chapter
-                    }&lang=${getLanguageName(item.attributes.translatedLanguage)}&langFilter=${item.attributes.translatedLanguage
-                    }&langValue=${lang}&order=${sortOrder}`
-                  )
-                }
+                onClick={() => {
+                  saveReaderContext({
+                    mangaId,
+                    offset: localOffset,
+                    langFilterValue: langFilter,
+                    langValue: lang,
+                    order: sortOrder
+                  })
+                  router.push(`/reader/${item.id}`)
+                }}
                 className={`group relative p-4 rounded-xl border transition-all cursor-pointer ${isActive
                   ? 'bg-primary/10 border-primary/40 ring-1 ring-primary/40'
                   : 'glass-card border-white/5 hover:border-primary/40 hover:bg-white/10'

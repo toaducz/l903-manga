@@ -15,10 +15,11 @@ import MangaChaptersList from '@/components/manga/manga-chapter-list'
 import Loading from '@/components/status/Loading'
 import Error from '@/components/status/error'
 import { getChaptersByMangaId } from '@/codebase/api/manga/get-chapter'
-import { getLanguageName } from '@/codebase/constants/enums'
+// import { getLanguageName } from '@/codebase/constants/enums'
 import RelatedManga from '@/components/manga/related-manga'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiArrowLeft, FiHeart, FiShare2, FiInfo, FiHome } from 'react-icons/fi'
+import { saveReaderContext } from '@/codebase/utils/reader-context'
 
 interface MangaDetailPageProps {
   manga: Manga
@@ -328,13 +329,16 @@ const MangaDetailPage: React.FC<MangaDetailPageProps> = ({ manga }) => {
               <div className='flex flex-wrap gap-5 pt-6'>
                 <button
                   className='flex-1 md:flex-none px-12 py-5 bg-primary text-primary-foreground font-black rounded-2xl transition-all hover:scale-[1.03] active:scale-95 neon-glow shadow-[0_0_30px_rgba(56,189,248,0.4)] tracking-[0.1em] uppercase text-sm cursor-pointer'
-                  onClick={() =>
-                    router.push(
-                      `/reader/${firstChapterId}?mangaId=${manga.id}&lang=${getLanguageName(
-                        lang
-                      )}&langFilter=${lang}&langValue=${lang}&chapterId=${firstChapterId}`
-                    )
-                  }
+                  onClick={() => {
+                    saveReaderContext({
+                      mangaId: manga.id,
+                      offset: 0,
+                      langFilterValue: [lang],
+                      langValue: lang,
+                      order: 'desc'
+                    })
+                    router.push(`/reader/${firstChapterId}`)
+                  }}
                 >
                   BẮT ĐẦU ĐỌC
                 </button>

@@ -1,6 +1,6 @@
 import { queryOptions } from '@tanstack/react-query'
 import { request } from '@/codebase/utils/request'
-import { DataResponse } from '../paginate'
+import { DataResponse, Detail } from '../paginate'
 
 export type Chapter = {
   id: string
@@ -21,32 +21,34 @@ export type Chapter = {
   relationships: ChapterRelationship[]
 }
 
+export type ScanlationGroupAttributes = {
+  name: string
+  altNames: string[]
+  locked: boolean
+  website: string | null
+  ircServer: string | null
+  ircChannel: string | null
+  discord: string | null
+  contactEmail: string | null
+  description: string | null
+  twitter: string | null
+  mangaUpdates: string | null
+  focusedLanguages: string[]
+  official: boolean
+  verified: boolean
+  inactive: boolean
+  publishDelay: string | null
+  exLicensed: boolean
+  createdAt: string
+  updatedAt: string
+  version: number
+}
+
 type ChapterRelationship =
   | {
       id: string
-      type: string
-      attributes: {
-        name: string
-        altNames: string[]
-        locked: boolean
-        website: string | null
-        ircServer: string | null
-        ircChannel: string | null
-        discord: string | null
-        contactEmail: string | null
-        description: string | null
-        twitter: string | null
-        mangaUpdates: string | null
-        focusedLanguages: string[]
-        official: boolean
-        verified: boolean
-        inactive: boolean
-        publishDelay: string | null
-        exLicensed: boolean
-        createdAt: string
-        updatedAt: string
-        version: number
-      }
+      type: 'scanlation_group'
+      attributes: ScanlationGroupAttributes
     }
   | {
       id: string
@@ -78,7 +80,13 @@ export type NewChapter = {
   relationships: Array<
     | {
         id: string
-        type: 'scanlation_group' | 'user'
+        type: 'scanlation_group'
+        attributes?: ScanlationGroupAttributes
+      }
+    | {
+        id: string
+        type: 'user'
+        attributes?: undefined
       }
     | {
         id: string
@@ -88,13 +96,13 @@ export type NewChapter = {
           altTitles: Array<Record<string, string>>
           description: Record<string, string>
           isLocked: boolean
-          links: Record<string, string>
+          links: Record<string, string> | null
           originalLanguage: string
-          lastVolume: string
-          lastChapter: string
-          publicationDemographic: string
+          lastVolume: string | null
+          lastChapter: string | null
+          publicationDemographic: string | null
           status: string
-          year: number
+          year: number | null
           contentRating: string
           tags: Array<{
             id: string
@@ -112,7 +120,7 @@ export type NewChapter = {
           createdAt: string
           updatedAt: string
           version: number
-          availableTranslatedLanguages: string[]
+          availableTranslatedLanguages: Array<string | null>
           latestUploadedChapter: string
         }
       }
@@ -165,3 +173,9 @@ export const getChapters = ({ offset, limit }: NewChapterParams) => ({
       'includes[]': 'manga'
     })
 })
+
+export const getChapterById = (id: string) => ({
+  queryKey: ['chapter', id],
+  queryFn: () => request<Detail<NewChapter>>(`/chapter/${id}?includes[]=manga`, 'GET')
+})
+
