@@ -74,11 +74,11 @@ const ChapterNavButton = ({
 
   // Kiểm tra điều kiện vô hiệu hóa nút
   const isAsc = order === 'asc'
-  const isDisabled = isAsc
+  const isDisabled = !chapter && (isAsc
     ? (direction === 'next' && (!hasMoreChapters || Number(offset) >= total)) ||
       (direction === 'prev' && (!hasMoreChapters || Number(offset) <= 0))
     : (direction === 'next' && (!hasMoreChapters || Number(offset) <= 0)) ||
-      (direction === 'prev' && (!hasMoreChapters || Number(offset) >= total))
+      (direction === 'prev' && (!hasMoreChapters || Number(offset) >= total)))
 
   // const isNextDisabled = !hasMoreChapters || Number(offset) >= total
   // const isPrevDisabled = Number(offset) <= 0

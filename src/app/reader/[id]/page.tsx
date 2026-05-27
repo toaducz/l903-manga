@@ -80,18 +80,32 @@ function ReaderContent() {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [chapterId])
+
+  useEffect(() => {
+    let lastScrollY = window.scrollY
+
     const handleScroll = () => {
+      const currentScrollY = window.scrollY
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight
-      const progress = (window.scrollY / totalHeight) * 100
+      const progress = (currentScrollY / totalHeight) * 100
       setScrollProgress(progress)
 
-      if (window.scrollY > 200 && showControls && !showSettings && !showChapters) {
-        setShowControls(false)
+      if (currentScrollY > 200 && showControls && !showSettings && !showChapters) {
+        if (currentScrollY - lastScrollY > 15) {
+          setShowControls(false)
+          lastScrollY = currentScrollY
+        } else if (currentScrollY < lastScrollY) {
+          lastScrollY = currentScrollY
+        }
+      } else {
+        lastScrollY = currentScrollY
       }
     }
-    window.addEventListener('scroll', handleScroll)
+    
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [id, showControls, showSettings, showChapters])
+  }, [showControls, showSettings, showChapters])
 
   useEffect(() => {
     if (mangaId && chapterId && chaptersData?.data?.length && title) {
@@ -123,15 +137,70 @@ function ReaderContent() {
   if (!chaptersData?.data?.length && isSuccess) return <Error message='Không tìm thấy chapter!' />
 
   return (
-    <div
-      className='bg-black min-h-screen transition-all duration-300'
-      style={{ filter: `brightness(${brightness}%)` }}
-      onClick={() => {
-        if (!showChapters && !showSettings) setShowControls(!showControls)
-      }}
-    >
+    <div className='bg-black min-h-screen'>
+      {/* Manga Content Container with Brightness Filter */}
+      <div
+        className='transition-all duration-300'
+        style={{ filter: `brightness(${brightness}%)` }}
+        onClick={() => {
+          if (!showChapters && !showSettings) setShowControls(!showControls)
+        }}
+      >
+        {/* Main Image List */}
+        <div className='flex flex-col items-center bg-black'>
+          <div className='w-full max-w-4xl flex flex-col gap-0'>
+            {images?.chapter?.data.map((filename: string, index: number) => (
+              <ImageWithLoading
+                key={index}
+                src={`/api/image?url=${encodeURIComponent(`${images.baseUrl}/data/${images.chapter.hash}/${filename}`)}`}
+                alt={`${title} - Chương ${number} - Trang ${index + 1}`}
+              />
+            ))}
+          </div>
+
+          {/* End of Chapter Navigation */}
+          <div className='w-full max-w-4xl py-20 px-6 flex flex-col items-center gap-8'>
+            <div className='h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent' />
+
+            <div className='text-center space-y-2'>
+              <h3 className='text-xl font-display font-black text-white tracking-tight uppercase'>
+                Bạn đã đọc hết chương {number}
+              </h3>
+              <p className='text-xs font-bold text-gray-500 uppercase tracking-widest'>
+                Chọn chương tiếp theo để tiếp tục hành trình
+              </p>
+            </div>
+
+            <div className='flex items-center gap-4 sm:gap-8'>
+              <ChapterNavButton
+                chapter={prevChapter}
+                direction='prev'
+                mangaId={mangaId}
+                offset={String(offset)}
+                langFilterValue={langFilterValue}
+                langValue={langValue}
+                order={order}
+                limit={Number(chaptersData?.limit) ?? 20}
+                total={Number(chaptersData?.total) ?? 100}
+              />
+              <ChapterNavButton
+                chapter={nextChapter}
+                direction='next'
+                mangaId={mangaId}
+                offset={String(offset)}
+                langFilterValue={langFilterValue}
+                langValue={langValue}
+                order={order}
+                limit={Number(chaptersData?.limit) ?? 20}
+                total={Number(chaptersData?.total) ?? 100}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Top Progress Bar */}
-      <div className='fixed top-0 left-0 w-full h-1 z-[100] bg-white/5'>
+      <div className='fixed top-0 left-0 w-full h-1 z-[100] bg-white/5 pointer-events-none'>
         <motion.div className='h-full bg-primary neon-glow' style={{ width: `${scrollProgress}%` }} />
       </div>
 
@@ -150,7 +219,7 @@ function ReaderContent() {
               <div className='flex items-center gap-6'>
                 <button
                   onClick={() => router.push(`/manga-detail/${mangaId}`)}
-                  className='p-3 hover:bg-white/10 rounded-full transition-all text-white active:scale-90'
+                  className='p-3 hover:bg-white/10 rounded-full transition-all text-white active:scale-90 cursor-pointer'
                 >
                   <FiChevronLeft size={28} />
                 </button>
@@ -210,51 +279,6 @@ function ReaderContent() {
               </div>
             </motion.div>
 
-            {/* Bottom Nav */}
-            <motion.div
-              initial={{ y: 100 }}
-              animate={{ y: 0 }}
-              exit={{ y: 100 }}
-              className='fixed bottom-8 inset-x-6 md:inset-x-auto md:left-1/2 md:-translate-x-1/2 z-[90] glass-card px-10 py-5 rounded-3xl flex items-center gap-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-white/10'
-              onClick={e => e.stopPropagation()}
-            >
-              <ChapterNavButton
-                chapter={prevChapter}
-                direction='prev'
-                mangaId={mangaId}
-                offset={String(offset)}
-                langFilterValue={langFilterValue}
-                langValue={langValue}
-                order={order}
-                limit={Number(chaptersData?.limit) ?? 20}
-                total={Number(chaptersData?.total) ?? 100}
-              />
-              <button
-                onClick={() => setShowChapters(true)}
-                className='flex flex-col items-center gap-1 group cursor-pointer hover:scale-105 transition-transform'
-              >
-                <span className='text-[10px] font-black text-primary uppercase tracking-[0.2em] group-hover:neon-glow transition-all'>
-                  DANH SÁCH
-                </span>
-                <div className='flex items-center gap-2'>
-                  <span className='text-sm font-black text-white whitespace-nowrap tracking-widest'>
-                    CHƯƠNG {number}
-                  </span>
-                  <FiMenu className='text-primary group-hover:neon-glow' />
-                </div>
-              </button>
-              <ChapterNavButton
-                chapter={nextChapter}
-                direction='next'
-                mangaId={mangaId}
-                offset={String(offset)}
-                langFilterValue={langFilterValue}
-                langValue={langValue}
-                order={order}
-                limit={Number(chaptersData?.limit) ?? 20}
-                total={Number(chaptersData?.total) ?? 100}
-              />
-            </motion.div>
           </>
         )}
       </AnimatePresence>
@@ -319,58 +343,6 @@ function ReaderContent() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Main Image List */}
-      <div className='flex flex-col items-center bg-black'>
-        <div className='w-full max-w-4xl flex flex-col gap-0'>
-          {images?.chapter?.data.map((filename: string, index: number) => (
-            <ImageWithLoading
-              key={index}
-              src={`/api/image?url=${encodeURIComponent(`${images.baseUrl}/data/${images.chapter.hash}/${filename}`)}`}
-              alt={`${title} - Chương ${number} - Trang ${index + 1}`}
-            />
-          ))}
-        </div>
-
-        {/* End of Chapter Navigation */}
-        <div className='w-full max-w-4xl py-20 px-6 flex flex-col items-center gap-8'>
-          <div className='h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent' />
-
-          <div className='text-center space-y-2'>
-            <h3 className='text-xl font-display font-black text-white tracking-tight uppercase'>
-              Bạn đã đọc hết chương {number}
-            </h3>
-            <p className='text-xs font-bold text-gray-500 uppercase tracking-widest'>
-              Chọn chương tiếp theo để tiếp tục hành trình
-            </p>
-          </div>
-
-          <div className='flex items-center gap-4 sm:gap-8'>
-            <ChapterNavButton
-              chapter={prevChapter}
-              direction='prev'
-              mangaId={mangaId}
-              offset={String(offset)}
-              langFilterValue={langFilterValue}
-              langValue={langValue}
-              order={order}
-              limit={Number(chaptersData?.limit) ?? 20}
-              total={Number(chaptersData?.total) ?? 100}
-            />
-            <ChapterNavButton
-              chapter={nextChapter}
-              direction='next'
-              mangaId={mangaId}
-              offset={String(offset)}
-              langFilterValue={langFilterValue}
-              langValue={langValue}
-              order={order}
-              limit={Number(chaptersData?.limit) ?? 20}
-              total={Number(chaptersData?.total) ?? 100}
-            />
-          </div>
-        </div>
-      </div>
 
       {/* Side Chapters Menu */}
       <AnimatePresence>

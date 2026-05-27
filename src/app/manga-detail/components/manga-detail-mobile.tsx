@@ -15,7 +15,7 @@ import ReactMarkdown from 'react-markdown'
 import MangaChaptersList from '@/components/manga/manga-chapter-list'
 import { getChaptersByMangaId } from '@/codebase/api/manga/get-chapter'
 import RelatedManga from '@/components/manga/related-manga'
-import { FiArrowLeft, FiShare2, FiInfo } from 'react-icons/fi'
+import { FiArrowLeft, FiShare2, FiInfo, FiHome } from 'react-icons/fi'
 import { copyToClipboard } from '@/codebase/utils/copy-to-clipboard'
 
 interface MangaDetailMobileProps {
@@ -70,19 +70,27 @@ const MangaDetailMobile: React.FC<MangaDetailMobileProps> = ({ manga }) => {
   }
 
   const rating = attributes.contentRating as keyof typeof ContentRating
-  const title = attributes.altTitles.find(item => item.vi)?.vi ?? attributes.title.en
-  const subTitle = attributes.altTitles.find(item => item.en)?.en || attributes.altTitles.find(item => item.ja)?.ja
+  const title = attributes.altTitles.find(item => item.vi)?.vi || attributes.title.en || attributes.title.ja || attributes.title['ja-ro']
+  const subTitle = attributes.altTitles.find(item => item.en)?.en || attributes.altTitles.find(item => item.ja)?.ja || attributes.altTitles.find(item => item['ja-ro'])?.['ja-ro']
 
   return (
     <div className='relative min-h-screen bg-background text-foreground pb-20'>
       {/* Header Actions */}
       <div className='fixed top-0 inset-x-0 z-[100] px-4 py-4 flex items-center justify-between pointer-events-none'>
-        <button
-          onClick={() => router.back()}
-          className='p-2.5 bg-black/50 backdrop-blur-md rounded-full text-white pointer-events-auto active:scale-95'
-        >
-          <FiArrowLeft size={20} />
-        </button>
+        <div className='flex gap-2 pointer-events-auto'>
+          <button
+            onClick={() => router.back()}
+            className='p-2.5 bg-black/50 backdrop-blur-md rounded-full text-white active:scale-95'
+          >
+            <FiArrowLeft size={20} />
+          </button>
+          <button
+            onClick={() => router.push('/')}
+            className='p-2.5 bg-black/50 backdrop-blur-md rounded-full text-white active:scale-95'
+          >
+            <FiHome size={20} />
+          </button>
+        </div>
         <button
           onClick={async () => {
             const success = await copyToClipboard(window.location.href)
@@ -126,9 +134,9 @@ const MangaDetailMobile: React.FC<MangaDetailMobileProps> = ({ manga }) => {
 
           {/* Quick Info */}
           <div className='flex flex-col justify-start pb-1'>
-            <h1 className='text-lg font-black text-white leading-tight line-clamp-3 mb-1 drop-shadow-md'>
+            <p className='text-2xl font-black text-white leading-tight line-clamp-3 mb-1 drop-shadow-md'>
               {title}
-            </h1>
+            </p>
             {subTitle && (
               <p className='text-xs text-primary font-bold line-clamp-1 opacity-90 drop-shadow-sm mb-2'>
                 {subTitle}

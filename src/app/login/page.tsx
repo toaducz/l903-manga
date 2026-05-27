@@ -1,4 +1,4 @@
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { SubmitButton } from '@/components/common/submit-button'
 import { decodeJwt } from 'jose'
@@ -44,11 +44,15 @@ export default async function LoginPage({
             urlEncodedBody.append('username', username)
             urlEncodedBody.append('password', password)
 
+            const headersList = await headers()
+            const userAgent = headersList.get('user-agent') || ''
+
             const res = await fetch(`${process.env.ENDPOINT_URL}/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
-                    'x-api-key': process.env.SCERET_KEY || ''
+                    'x-api-key': process.env.SCERET_KEY || '',
+                    'user-agent': userAgent
                 },
                 body: urlEncodedBody
             })

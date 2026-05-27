@@ -2,15 +2,17 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { getChaptersByMangaId } from '@/codebase/api/manga/get-chapter'
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import Loading from '../status/Loading'
 import { useSearchParams, useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 import Error from '../status/error'
 import { getLanguageName } from '@/codebase/constants/enums'
 import { formatDate } from '@/codebase/utils/format'
 import Pagination from '../common/pagination'
 import { motion } from 'framer-motion'
 import { FiArrowUp, FiArrowDown } from 'react-icons/fi'
+import Link from 'next/link'
 
 interface MangaChaptersListProps {
   mangaId: string
@@ -32,10 +34,16 @@ const MangaChaptersList: React.FC<MangaChaptersListProps> = ({
   const searchParams = useSearchParams()
   const router = useRouter()
   const limit = 20
-  const offset = useMemo(() => {
+  const [localOffset, setLocalOffset] = useState<number>(() => {
     if (offsetParams !== undefined && offsetParams !== null) return offsetParams
     return parseInt(searchParams.get('offset') || '0', 10)
-  }, [offsetParams, searchParams])
+  })
+
+  useEffect(() => {
+    if (offsetParams !== undefined && offsetParams !== null) {
+      setLocalOffset(offsetParams)
+    }
+  }, [offsetParams])
 
   const [sortOrder, setSortOrder] = useState(order ?? 'desc')
   const [lang, setLang] = useState<string>(langValue ?? 'all')
@@ -45,7 +53,7 @@ const MangaChaptersList: React.FC<MangaChaptersListProps> = ({
     data: chapter,
     isLoading,
     isError
-  } = useQuery(getChaptersByMangaId({ id: mangaId, limit, offset, order: sortOrder, lang: langFilter }))
+  } = useQuery(getChaptersByMangaId({ id: mangaId, limit, offset: localOffset, order: sortOrder, lang: langFilter }))
 
   const handleLangChange = (selected: string) => {
     setLang(selected)
@@ -58,9 +66,7 @@ const MangaChaptersList: React.FC<MangaChaptersListProps> = ({
   }
 
   const setOffset = (newOffset: number) => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set('offset', newOffset.toString())
-    router.push(`?${params.toString()}`, { scroll: false })
+    setLocalOffset(newOffset)
   }
 
   if (isLoading) return <Loading />
@@ -76,11 +82,10 @@ const MangaChaptersList: React.FC<MangaChaptersListProps> = ({
               <button
                 key={l}
                 onClick={() => handleLangChange(l)}
-                className={`px-4 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer ${
-                  lang === l
-                    ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
-                    : 'text-gray-400 hover:text-white'
-                }`}
+                className={`px-4 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer ${lang === l
+                  ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
+                  : 'text-gray-400 hover:text-white'
+                  }`}
               >
                 {l === 'all' ? 'TẤT CẢ' : l}
               </button>
@@ -99,7 +104,7 @@ const MangaChaptersList: React.FC<MangaChaptersListProps> = ({
 
       <Pagination
         total={chapter?.total || 0}
-        offset={offset}
+        offset={localOffset}
         limit={limit}
         onPageChange={newOffset => setOffset(newOffset)}
       />
@@ -108,7 +113,10 @@ const MangaChaptersList: React.FC<MangaChaptersListProps> = ({
       <div className='grid gap-3'>
         {chapter.total === 0 ? (
           <div className='text-center py-20 bg-white/5 rounded-2xl border border-dashed border-white/10'>
-            <p className='text-gray-500 font-bold'>Không tìm thấy bản dịch cho ngôn ngữ này.</p>
+            <p className='text-gray-400 font-bold'>Không tìm thấy bản dịch cho ngôn ngữ này.</p>
+            <Link href={`/homepage`} className='block pt-3 cursor-pointer'>
+              <p className='italic text-sm text-gray-500 font-bold hover:text-primary transition-all'>Tại sao chuyện này xảy ra?</p>
+            </Link>
           </div>
         ) : (
           chapter.data.map((item, index) => {
@@ -121,18 +129,15 @@ const MangaChaptersList: React.FC<MangaChaptersListProps> = ({
                 key={item.id}
                 onClick={() =>
                   router.push(
-                    `/reader/${item.id}?mangaId=${mangaId}&offset=${offset}&chapterId=${item.id}&number=${
-                      item.attributes.chapter
-                    }&lang=${getLanguageName(item.attributes.translatedLanguage)}&langFilter=${
-                      item.attributes.translatedLanguage
+                    `/reader/${item.id}?mangaId=${mangaId}&offset=${localOffset}&chapterId=${item.id}&number=${item.attributes.chapter
+                    }&lang=${getLanguageName(item.attributes.translatedLanguage)}&langFilter=${item.attributes.translatedLanguage
                     }&langValue=${lang}&order=${sortOrder}`
                   )
                 }
-                className={`group relative p-4 rounded-xl border transition-all cursor-pointer ${
-                  isActive
-                    ? 'bg-primary/10 border-primary/40 ring-1 ring-primary/40'
-                    : 'glass-card border-white/5 hover:border-primary/40 hover:bg-white/10'
-                }`}
+                className={`group relative p-4 rounded-xl border transition-all cursor-pointer ${isActive
+                  ? 'bg-primary/10 border-primary/40 ring-1 ring-primary/40'
+                  : 'glass-card border-white/5 hover:border-primary/40 hover:bg-white/10'
+                  }`}
               >
                 <div className='flex items-center justify-between gap-4'>
                   <div className='flex-1'>
@@ -167,7 +172,7 @@ const MangaChaptersList: React.FC<MangaChaptersListProps> = ({
 
       <Pagination
         total={chapter?.total || 0}
-        offset={offset}
+        offset={localOffset}
         limit={limit}
         onPageChange={newOffset => setOffset(newOffset)}
       />

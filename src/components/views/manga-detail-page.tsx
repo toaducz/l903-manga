@@ -18,7 +18,7 @@ import { getChaptersByMangaId } from '@/codebase/api/manga/get-chapter'
 import { getLanguageName } from '@/codebase/constants/enums'
 import RelatedManga from '@/components/manga/related-manga'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FiArrowLeft, FiHeart, FiShare2, FiInfo } from 'react-icons/fi'
+import { FiArrowLeft, FiHeart, FiShare2, FiInfo, FiHome } from 'react-icons/fi'
 
 interface MangaDetailPageProps {
   manga: Manga
@@ -79,14 +79,27 @@ const MangaDetailPage: React.FC<MangaDetailPageProps> = ({ manga }) => {
     <div className='relative min-h-screen bg-background text-foreground overflow-x-hidden'>
       {/* Floating Header Controls */}
       <div className='fixed top-0 inset-x-0 z-[100] px-6 py-8 flex items-center justify-between pointer-events-none'>
-        <motion.button
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          onClick={() => router.back()}
-          className='p-3 glass-card rounded-full text-white pointer-events-auto hover:bg-white/20 transition-all active:scale-90 cursor-pointer'
-        >
-          <FiArrowLeft size={24} />
-        </motion.button>
+        <div className='flex gap-3 pointer-events-auto'>
+          <motion.button
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            onClick={() => router.back()}
+            className='p-3 glass-card rounded-full text-white hover:bg-white/20 transition-all active:scale-90 cursor-pointer'
+            title='Quay lại'
+          >
+            <FiArrowLeft size={24} />
+          </motion.button>
+
+          <motion.button
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            onClick={() => router.push('/')}
+            className='p-3 glass-card rounded-full text-white hover:bg-white/20 transition-all active:scale-90 cursor-pointer'
+            title='Trang chủ'
+          >
+            <FiHome size={24} />
+          </motion.button>
+        </div>
         <div className='flex gap-3 pointer-events-auto'>
           <div className='relative group/tooltip'>
             <motion.button
@@ -216,10 +229,10 @@ const MangaDetailPage: React.FC<MangaDetailPageProps> = ({ manga }) => {
             <div className='space-y-8 pt-12 md:pt-0'>
               <div className='space-y-3'>
                 <h1 className='text-5xl md:text-7xl font-display font-black text-white leading-[1.1] tracking-tight'>
-                  {attributes.altTitles.find(item => item.vi)?.vi ?? attributes.title.en}
+                  {attributes.altTitles.find(item => item.vi)?.vi || attributes.title.en || attributes.title.ja || attributes.title['ja-ro']}
                 </h1>
                 <p className='text-2xl md:text-3xl text-primary font-bold opacity-90 tracking-tight'>
-                  {attributes.altTitles.find(item => item.en)?.en || attributes.altTitles.find(item => item.ja)?.ja}
+                  {attributes.altTitles.find(item => item.en)?.en || attributes.altTitles.find(item => item.ja)?.ja || attributes.altTitles.find(item => item['ja-ro'])?.['ja-ro']}
                 </p>
               </div>
 

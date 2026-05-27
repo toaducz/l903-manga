@@ -14,7 +14,8 @@ export default function RecommendationContentPage() {
     'cddd1849-ab36-4304-8103-06ba4062b5e6', //Kubo-san
     '6ce4c88e-381e-4c4a-a858-7585fff92f47', // we never learn
     'a2febd3e-6252-46eb-bd63-01d51deaaec5', // 5tobún
-    '25e1d17b-6a4d-4698-a4f6-bf53460c10af' // Kaoru Hana wa Rin to Saku
+    '25e1d17b-6a4d-4698-a4f6-bf53460c10af', // Kaoru Hana wa Rin to Saku
+    'ee96e2b7-9af2-4864-9656-649f4d3b6fec', // không thể tử tế?
   ]
 
   const customDescriptions: { [key: string]: string } = {
@@ -24,7 +25,8 @@ export default function RecommendationContentPage() {
     'cddd1849-ab36-4304-8103-06ba4062b5e6': 'ok 👍',
     '6ce4c88e-381e-4c4a-a858-7585fff92f47': 'Pick sai kèo cay vcl',
     'a2febd3e-6252-46eb-bd63-01d51deaaec5': 'Pick sai kèo cay vcl',
-    '25e1d17b-6a4d-4698-a4f6-bf53460c10af': 'Truyền nhân của Gái mang kính, Gái xe buýt =))'
+    '25e1d17b-6a4d-4698-a4f6-bf53460c10af': 'Truyền nhân của Gái mang kính, Gái xe buýt =))',
+    'ee96e2b7-9af2-4864-9656-649f4d3b6fec': 'Gái Gyaru có thể tử tế với Otaku',
   }
 
   const mangaQueries = useQueries({
