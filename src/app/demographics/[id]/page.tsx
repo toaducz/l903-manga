@@ -3,8 +3,8 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import MangaByTagPage from '@/components/views/manga-by-tag-page'
 import { useParams, useSearchParams } from 'next/navigation'
-import { FiGrid, FiArrowLeft } from 'react-icons/fi'
-import Link from 'next/link'
+import { FiGrid } from 'react-icons/fi'
+// import Link from 'next/link'
 import { RecoilRoot } from 'recoil'
 
 export default function DemographicDetailPage() {
