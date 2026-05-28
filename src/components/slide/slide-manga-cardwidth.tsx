@@ -11,7 +11,7 @@ import { getNewManga } from '@/codebase/api/manga/search-manga'
 import Loading from '../status/Loading'
 import Error from '../status/error'
 import { MangaStatus } from '@/codebase/constants/enums'
-// import { motion } from 'framer-motion'
+import { getMangaInfo } from '@/codebase/utils/manga'
 
 import 'swiper/css'
 import 'swiper/css/pagination'
@@ -47,13 +47,7 @@ const SlideMangaCardFullWidth: React.FC<Props> = ({ id }) => {
       >
         {newManga?.data.map(manga => {
           const attr = manga.attributes
-          const title = attr.altTitles.find(t => t.vi)?.vi ?? attr.title.en ?? attr.altTitles.find(t => t.en)?.en
-          const description = attr.description.en || attr.description.vi || 'No description available.'
-          const coverArt = manga.relationships.find(rel => rel.type === 'cover_art')
-          const coverImageUrl = coverArt?.attributes?.fileName
-            ? `https://uploads.mangadex.org/covers/${manga.id}/${coverArt.attributes.fileName}`
-            : ''
-          const proxyImageUrl = `/api/image?url=${encodeURIComponent(coverImageUrl)}`
+          const { title, description, proxyImageUrl } = getMangaInfo(manga)
 
           return (
             <SwiperSlide key={manga.id + id}>

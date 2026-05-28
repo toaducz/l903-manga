@@ -91,7 +91,7 @@ export default function Home() {
                   count={4}
                   hero={true}
                   description='Những câu chuyện tình yêu ngọt ngào, sâu lắng dành cho những tâm hồn mơ mộng.'
-                  filterHref={`/filter-search?tags=${ROMANCE}`}
+                  filterHref={`/genres/${ROMANCE}?name=${encodeURIComponent('Lãng Mạn')}`}
                 />
 
                 {/* Comedy */}
@@ -102,7 +102,7 @@ export default function Home() {
                   badgeRight='HOT TREND'
                   theme='orange'
                   count={4}
-                  filterHref={`/filter-search?tags=${COMEDY}`}
+                  filterHref={`/genres/${COMEDY}?name=${encodeURIComponent('Hài Hước')}`}
                 />
 
                 {/* Action */}
@@ -113,7 +113,7 @@ export default function Home() {
                   badgeRight='ADRENALINE'
                   theme='blue'
                   count={4}
-                  filterHref={`/filter-search?tags=${ACTION}`}
+                  filterHref={`/genres/${ACTION}?name=${encodeURIComponent('Hành Động')}`}
                 />
 
                 {/* Explore All - Link Card */}

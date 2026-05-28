@@ -7,23 +7,13 @@ import { useQuery } from '@tanstack/react-query'
 // import { useRouter } from 'next/navigation'
 import { getTopMangaByTagId } from '@/codebase/api/manga/get-top-manga-by-tag-id'
 import { Manga } from '@/codebase/api/paginate'
-// import { motion } from 'framer-motion'
 import { FiArrowRight } from 'react-icons/fi'
+import { getMangaInfo } from '@/codebase/utils/manga'
 
 function MiniPoster({ manga }: { manga: Manga }) {
   // const [loaded, setLoaded] = useState(false)
 
-  const title =
-    manga.attributes.altTitles.find(t => t.vi)?.vi ??
-    manga.attributes.altTitles.find(t => t.en)?.en ??
-    manga.attributes.title.en ??
-    'Unknown'
-
-  const coverArt = manga.relationships.find(r => r.type === 'cover_art')
-  const fileName = coverArt?.attributes?.fileName
-  const imgUrl = fileName
-    ? `/api/image?url=${encodeURIComponent(`https://uploads.mangadex.org/covers/${manga.id}/${fileName}`)}`
-    : ''
+  const { title, proxyImageUrl: imgUrl } = getMangaInfo(manga)
 
   return (
     <Link

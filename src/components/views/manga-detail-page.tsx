@@ -20,6 +20,7 @@ import RelatedManga from '@/components/manga/related-manga'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiArrowLeft, FiHeart, FiShare2, FiInfo, FiHome } from 'react-icons/fi'
 import { saveReaderContext } from '@/codebase/utils/reader-context'
+import { getMangaInfo } from '@/codebase/utils/manga'
 
 interface MangaDetailPageProps {
   manga: Manga
@@ -36,10 +37,7 @@ const MangaDetailPage: React.FC<MangaDetailPageProps> = ({ manga }) => {
   const attributes = manga.attributes
   const isVietnameseAvailable = attributes.availableTranslatedLanguages.includes('vi')
   const lang = attributes.availableTranslatedLanguages.includes('vi') ? 'vi' : 'en'
-  const coverArt = manga.relationships.find(rel => rel.type === 'cover_art')
-  const coverArtFileName = coverArt?.attributes?.fileName
-  const coverImageUrl = coverArtFileName ? `https://uploads.mangadex.org/covers/${manga.id}/${coverArtFileName}` : ''
-  const proxyImageUrl = `/api/image?url=${encodeURIComponent(coverImageUrl)}`
+  const { title, subTitle, proxyImageUrl } = getMangaInfo(manga)
   const [isTranslationLoading, setIsTranslationLoading] = useState(false)
   const authorId = manga.relationships.find(item => item.type === 'author')?.id
   const { data: author, isLoading, isError } = useQuery(getAuthorById({ id: authorId! }))
@@ -190,7 +188,7 @@ const MangaDetailPage: React.FC<MangaDetailPageProps> = ({ manga }) => {
               <Image
                 unoptimized
                 src={proxyImageUrl}
-                alt={'title' + attributes.title.en}
+                alt={title}
                 fill
                 className='object-cover transition-transform duration-700 group-hover:scale-110'
               />
@@ -229,12 +227,20 @@ const MangaDetailPage: React.FC<MangaDetailPageProps> = ({ manga }) => {
           >
             <div className='space-y-8 pt-12 md:pt-0'>
               <div className='space-y-3'>
-                <h1 className='text-5xl md:text-7xl font-display font-black text-white leading-[1.1] tracking-tight'>
-                  {attributes.altTitles.find(item => item.vi)?.vi || attributes.title.en || attributes.title.ja || attributes.title['ja-ro']}
+                <h1 
+                  title={title}
+                  className='text-5xl md:text-7xl font-display font-black text-white leading-tight tracking-tight line-clamp-2 pb-2 cursor-help'
+                >
+                  {title}
                 </h1>
-                <p className='text-2xl md:text-3xl text-primary font-bold opacity-90 tracking-tight'>
-                  {attributes.altTitles.find(item => item.en)?.en || attributes.altTitles.find(item => item.ja)?.ja || attributes.altTitles.find(item => item['ja-ro'])?.['ja-ro']}
-                </p>
+                {subTitle && (
+                  <p 
+                    title={subTitle}
+                    className='text-2xl md:text-3xl text-primary font-bold opacity-90 leading-tight tracking-tight line-clamp-2 cursor-help'
+                  >
+                    {subTitle}
+                  </p>
+                )}
               </div>
 
               {/* Tags/Genres */}
@@ -242,7 +248,7 @@ const MangaDetailPage: React.FC<MangaDetailPageProps> = ({ manga }) => {
                 {attributes.tags.map(tag => (
                   <Link
                     key={tag.id}
-                    href={`/filter-search?tags=${tag.id}`}
+                    href={`/genres/${tag.id}?name=${encodeURIComponent(tag.attributes.name.en || '')}`}
                     className='px-4 py-1.5 bg-zinc-900 border border-white/10 rounded-full text-[11px] font-black text-gray-300 uppercase tracking-widest hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all shadow-lg'
                   >
                     {tag.attributes.name.en}

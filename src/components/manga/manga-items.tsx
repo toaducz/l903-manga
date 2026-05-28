@@ -3,6 +3,7 @@ import React from 'react'
 import { Manga } from '@/codebase/api/paginate'
 import { MangaStatus, ContentRating } from '@/codebase/constants/enums'
 import Image from 'next/image'
+import { getMangaInfo } from '@/codebase/utils/manga'
 
 interface MangaCardProps {
   manga: Manga
@@ -12,13 +13,7 @@ interface MangaCardProps {
 const MangaItems: React.FC<MangaCardProps> = ({ manga, isResponsive = true }) => {
   // const [isLoading, setIsLoading] = useState(true)
 
-  const altTitle = manga.attributes.altTitles.find(t => t.en)?.en || manga.attributes.altTitles.find(t => t.ja)?.ja
-  const title = manga.attributes.altTitles.find(t => t.vi)?.vi ?? manga.attributes.title.en ?? altTitle
-
-  const coverArt = manga.relationships.find(rel => rel.type === 'cover_art')
-  const coverArtFileName = coverArt?.attributes?.fileName
-  const coverImageUrl = coverArtFileName ? `https://uploads.mangadex.org/covers/${manga.id}/${coverArtFileName}` : ''
-  const proxyImageUrl = `/api/image?url=${encodeURIComponent(coverImageUrl)}`
+  const { title, proxyImageUrl } = getMangaInfo(manga)
 
   const status = MangaStatus[manga.attributes.status as keyof typeof MangaStatus] || manga.attributes.status
   const rating =

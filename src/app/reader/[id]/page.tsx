@@ -18,6 +18,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { FiMenu, FiChevronLeft, FiSettings, FiX, FiSun, FiMaximize } from 'react-icons/fi'
 import { getReaderContext, ReaderContext } from '@/codebase/utils/reader-context'
 import { getLanguageName } from '@/codebase/constants/enums'
+import { getMangaInfo } from '@/codebase/utils/manga'
 
 export default function ChapterReaderPage() {
   return (
@@ -89,10 +90,7 @@ function ReaderContent() {
   })
 
   const title = useMemo(
-    () =>
-      manga?.data?.attributes?.altTitles.find(t => t.vi)?.vi ??
-      manga?.data?.attributes?.altTitles.find(t => t.en)?.en ??
-      manga?.data?.attributes?.altTitles.find(t => t.ja)?.ja,
+    () => getMangaInfo(manga?.data).title,
     [manga]
   )
 
@@ -263,7 +261,7 @@ function ReaderContent() {
                       chapter={nextChapter}
                       direction='next'
                       mangaId={mangaId}
-                      offset={String(offset)}
+                      offset={String(offset)} 
                       langFilterValue={langFilterValue}
                       langValue={langValue}
                       order={order}

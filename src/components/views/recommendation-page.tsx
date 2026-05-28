@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { getMangaById } from '@/codebase/api/manga/get-manga-by-id'
 import { useQueries } from '@tanstack/react-query'
 import Link from 'next/link'
+import { getMangaInfo } from '@/codebase/utils/manga'
 
 export default function RecommendationContentPage() {
   const ids = [
@@ -33,25 +34,34 @@ export default function RecommendationContentPage() {
     queries: ids.map(id => getMangaById({ id }))
   })
 
-  // console.log(mangaQueries)
-
   return (
-    <div className='min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 px-4 py-8 sm:p-12'>
-      <h1 className='text-3xl sm:text-5xl font-bold text-white text-center mb-8 sm:mb-12 tracking-tight pt-15'>
-        Peak Romcom là đây mấy con gà biết gì 🐧
-      </h1>
-      <div className='grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 max-w-5xl mx-auto'>
+    <main className='min-h-screen pb-24 px-6 max-w-[1440px] mx-auto bg-background text-foreground'>
+      {/* Hero Section */}
+      <section className='mb-24 flex flex-col items-start max-w-3xl'>
+        <h1 className='text-[48px] font-extrabold text-foreground mb-4 uppercase tracking-tighter'>
+          L903 Rom-com
+        </h1>
+        <p className='text-[18px] text-primary font-medium'>
+          Peak Romcom là đây mấy con gà biết gì 🐧
+        </p>
+        <div className='mt-8 w-24 h-1 bg-primary'></div>
+      </section>
+
+      {/* Content Section: Asymmetrical Layout */}
+      <section className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 pb-20'>
         {mangaQueries.map((query, index) => {
           if (query.isLoading) {
             return (
-              <div key={index} className='relative bg-gray-800 rounded-2xl shadow-lg overflow-hidden animate-pulse'>
-                <div className='h-80 sm:h-96 w-full bg-gray-700' />
-                <div className='p-4 sm:p-6 space-y-4'>
-                  <div className='h-6 bg-gray-700 rounded w-3/4' />
-                  <div className='space-y-2'>
-                    <div className='h-4 bg-gray-700 rounded w-full' />
-                    <div className='h-4 bg-gray-700 rounded w-5/6' />
-                  </div>
+              <div
+                key={index}
+                className={`group flex flex-col gap-6 animate-pulse ${
+                  index % 2 === 0 ? 'lg:-translate-y-5' : 'lg:translate-y-10'
+                }`}
+              >
+                <div className='relative aspect-[2/3] overflow-hidden bg-slate-800 rounded-lg border border-white/10'></div>
+                <div className='flex flex-col gap-2'>
+                  <div className='h-6 bg-slate-800 rounded w-3/4' />
+                  <div className='h-4 bg-slate-800 rounded w-full' />
                 </div>
               </div>
             )
@@ -60,55 +70,51 @@ export default function RecommendationContentPage() {
           const manga = query.data?.data
           if (!manga) return null
 
-          const title =
-            manga.attributes.altTitles.find(t => t.vi)?.vi ||
-            manga.attributes.title.en ||
-            manga.attributes.altTitles.find(t => t.ja)?.ja
-          const description =
-            customDescriptions[manga.id] ||
-            manga.attributes.description.vi ||
-            manga.attributes.description.en ||
-            'Không có mô tả.'
-          const coverArt = manga.relationships.find(rel => rel.type === 'cover_art')
-          const coverArtFileName = coverArt?.attributes?.fileName
-          const coverImageUrl = coverArtFileName
-            ? `https://uploads.mangadex.org/covers/${manga.id}/${coverArtFileName}`
-            : ''
-          const proxyImageUrl = `/api/image?url=${encodeURIComponent(coverImageUrl)}`
+          const mangaInfo = getMangaInfo(manga)
+          const title = mangaInfo.title
+          const description = customDescriptions[manga.id] || mangaInfo.description
+          const proxyImageUrl = mangaInfo.proxyImageUrl
 
           return (
             <Link
               href={`/manga-detail/${manga.id}`}
               key={index}
-              className='group relative bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2'
+              className={`group flex flex-col gap-6 cursor-pointer ${
+                index % 2 === 0 ? 'lg:-translate-y-5' : 'lg:translate-y-10'
+              }`}
             >
-              <div className='relative h-80 sm:h-96 w-full'>
+              <div className='relative aspect-[2/3] overflow-hidden bg-slate-900 rounded-lg border border-white/10'>
                 <Image
                   unoptimized
                   src={proxyImageUrl}
-                  alt={'favorite'}
+                  alt={title || 'Manga Cover'}
                   fill
-                  className='object-cover group-hover:scale-110 transition-transform duration-500 ease-out'
-                  sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
-                  priority={index < 2} // Prioritize loading for first two images
+                  className='object-cover'
+                  sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw'
+                  priority={index < 4}
                 />
-                <div className='absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-300' />
-                <div className='absolute bottom-0 w-full p-4 sm:p-6'>
-                  <h2 className='text-xl sm:text-2xl font-bold text-white group-hover:text-yellow-300 transition-colors duration-300'>
-                    {title}
-                  </h2>
-                </div>
+                <div className='absolute inset-0 scrim-gradient opacity-60'></div>
+                {index === 0 && (
+                  <div className='absolute top-4 right-4 px-2 py-1 rounded bg-amber-500/20 border border-amber-500/40 backdrop-blur-md text-amber-500 text-[11px] font-bold uppercase tracking-widest z-10'>
+                    Top 1
+                  </div>
+                )}
               </div>
-              <div className='p-4 sm:p-6 text-gray-300 text-sm sm:text-base leading-relaxed line-clamp-4 group-hover:text-gray-100 transition-colors duration-300'>
-                {description}
-              </div>
-              <div className='absolute top-4 right-4 bg-yellow-400 text-gray-900 text-xs sm:text-sm font-semibold px-2 sm:px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
-                Đọc Ngay
+              <div className='flex flex-col gap-2'>
+                <h3 className='text-[20px] font-bold text-foreground group-hover:text-primary'>
+                  {title}
+                </h3>
+                <p className='text-[14px] text-foreground/70 line-clamp-2'>
+                  {description}
+                </p>
+                <button className='mt-2 w-max px-6 py-2 bg-primary text-primary-foreground text-[13px] font-bold rounded-lg cursor-pointer hover:opacity-90'>
+                  Đọc Ngay
+                </button>
               </div>
             </Link>
           )
         })}
-      </div>
-    </div>
+      </section>
+    </main>
   )
 }

@@ -102,7 +102,7 @@ export default function GenresPage() {
   return (
     <RecoilRoot>
       <div className='min-h-screen bg-background pb-32'>
-        <div className='max-w-screen-2xl mx-auto px-4 md:px-12 pt-32'>
+        <div className='max-w-screen-2xl mx-auto px-4 md:px-12'>
           {/* Header */}
           <div className='mb-16 space-y-4'>
             <div className='flex items-center gap-3 text-primary'>
@@ -134,7 +134,7 @@ export default function GenresPage() {
                       </div>
                     </div>
                     <Link
-                      href={`/filter-search?tags=${genre.id}`}
+                      href={`/genres/${genre.id}?name=${encodeURIComponent(genre.label)}`}
                       className={`px-6 py-2.5 glass-card rounded-full text-[10px] font-black uppercase tracking-widest text-gray-400 ${genre.borderColor} ${genre.textColor.replace('text-', 'hover:text-')} transition-all border border-white/5`}
                     >
                       Tất cả

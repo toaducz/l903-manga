@@ -114,7 +114,7 @@ const MangaChaptersList: React.FC<MangaChaptersListProps> = ({
       <div className='grid gap-3'>
         {chapter.total === 0 ? (
           <div className='text-center py-20 bg-white/5 rounded-2xl border border-dashed border-white/10'>
-            <p className='text-gray-400 font-bold'>Không tìm thấy bản dịch cho ngôn ngữ này.</p>
+            <p className='text-gray-400 font-bold'>Không tìm thấy bản dịch cho ngôn ngữ này. Có thể là không có nhà dịch, hoặc là...?</p>
             <Link href={`/homepage`} className='block pt-3 cursor-pointer'>
               <p className='italic text-sm text-gray-500 font-bold hover:text-primary transition-all'>Tại sao chuyện này xảy ra?</p>
             </Link>

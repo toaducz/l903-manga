@@ -18,6 +18,7 @@ import RelatedManga from '@/components/manga/related-manga'
 import { FiArrowLeft, FiShare2, FiInfo, FiHome } from 'react-icons/fi'
 import { copyToClipboard } from '@/codebase/utils/copy-to-clipboard'
 import { saveReaderContext } from '@/codebase/utils/reader-context'
+import { getMangaInfo } from '@/codebase/utils/manga'
 
 interface MangaDetailMobileProps {
   manga: Manga
@@ -36,10 +37,7 @@ const MangaDetailMobile: React.FC<MangaDetailMobileProps> = ({ manga }) => {
   const attributes = manga.attributes
   const isVietnameseAvailable = attributes.availableTranslatedLanguages.includes('vi')
   const lang = isVietnameseAvailable ? 'vi' : 'en'
-  const coverArt = manga.relationships.find(rel => rel.type === 'cover_art')
-  const coverArtFileName = coverArt?.attributes?.fileName
-  const coverImageUrl = coverArtFileName ? `https://uploads.mangadex.org/covers/${manga.id}/${coverArtFileName}` : ''
-  const proxyImageUrl = `/api/image?url=${encodeURIComponent(coverImageUrl)}`
+  const { title, subTitle, proxyImageUrl } = getMangaInfo(manga)
   const authorId = manga.relationships.find(item => item.type === 'author')?.id
   const { data: author } = useQuery(getAuthorById({ id: authorId! }))
   const { data: chapter } = useQuery(getChaptersByMangaId({ id: manga.id, lang: [lang] }))
@@ -71,8 +69,6 @@ const MangaDetailMobile: React.FC<MangaDetailMobileProps> = ({ manga }) => {
   }
 
   const rating = attributes.contentRating as keyof typeof ContentRating
-  const title = attributes.altTitles.find(item => item.vi)?.vi || attributes.title.en || attributes.title.ja || attributes.title['ja-ro']
-  const subTitle = attributes.altTitles.find(item => item.en)?.en || attributes.altTitles.find(item => item.ja)?.ja || attributes.altTitles.find(item => item['ja-ro'])?.['ja-ro']
 
   return (
     <div className='relative min-h-screen bg-background text-foreground pb-20'>

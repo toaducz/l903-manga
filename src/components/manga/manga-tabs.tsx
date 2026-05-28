@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import MangaByTagPage from '@/components/views/manga-by-tag-page'
+import Link from 'next/link'
 
 const demographics = [
   { key: 'shounen', label: 'Shounen' },
@@ -44,7 +45,16 @@ export default function MangaTabs() {
             exit={{ opacity: 0, y: -30 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
-            <MangaByTagPage limitManga={12} publicationDemographic={activeTab} pagination={true} />
+            <MangaByTagPage limitManga={12} publicationDemographic={activeTab} pagination={false} />
+            
+            <div className='flex justify-center mt-12'>
+              <Link
+                href={`/demographics/${activeTab}?name=${demographics.find(d => d.key === activeTab)?.label}`}
+                className='px-8 py-3.5 glass-card rounded-2xl text-xs font-black uppercase tracking-[0.2em] text-white hover:bg-white/10 hover:border-primary/30 transition-all cursor-pointer active:scale-95'
+              >
+                Xem tất cả {demographics.find(d => d.key === activeTab)?.label}
+              </Link>
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>
