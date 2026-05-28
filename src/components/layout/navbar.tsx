@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import { FiMenu, FiX, FiSearch, FiZap, FiClock, FiGrid } from 'react-icons/fi'
+import { FiMenu, FiX, FiSearch, FiZap, FiClock, FiGrid, FiArrowUpRight  } from 'react-icons/fi'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function Navbar() {
@@ -12,6 +12,8 @@ export default function Navbar() {
   const [search, setSearch] = useState('')
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+
+  const truyetranh = process.env.NEXT_PUBLIC_TRUYENTRANH ?? '/'
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,7 +36,8 @@ export default function Navbar() {
     { href: '/recommendation', label: 'Romcom gợi ý bởi L903-Manga', icon: <FiZap /> },
     { href: '/reading-history', label: 'Lịch sử đọc truyện', icon: <FiClock /> },
     { href: '/filter-search', label: 'Tìm kiếm nâng cao', icon: <FiGrid /> },
-    { href: '/random', label: 'Manga Ngẫu nhiên', icon: <FiZap className='rotate-180' /> }
+    { href: '/random', label: 'Manga Ngẫu nhiên', icon: <FiZap className='rotate-180' /> },
+    { href: truyetranh, label: 'L903 Truyện tranh', icon: <FiArrowUpRight /> }
   ]
 
   return (
@@ -59,10 +62,11 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all hover:bg-white/5 whitespace-nowrap ${pathname === link.href ? 'text-primary bg-primary/10' : 'text-gray-400'
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all hover:bg-white/5 whitespace-nowrap ${pathname === link.href ? 'text-primary bg-primary/10' : 'text-gray-400'
                     }`}
                 >
                   {link.label}
+                  {link.href === truyetranh && link.icon}
                 </Link>
               ))}
             </div>
