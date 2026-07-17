@@ -6,7 +6,7 @@ import React from 'react'
 import { useQuery } from '@tanstack/react-query'
 // import { useRouter } from 'next/navigation'
 import { getTopMangaByTagId } from '@/codebase/api/manga/get-top-manga-by-tag-id'
-import { Manga } from '@/codebase/api/paginate'
+import { Manga, DataResponse } from '@/codebase/api/paginate'
 import { FiArrowRight } from 'react-icons/fi'
 import { getMangaInfo } from '@/codebase/utils/manga'
 
@@ -119,6 +119,31 @@ const THEME = {
   },
 }
 
+export interface GenreCardConfig {
+  /** MangaDex tag UUID(s) */
+  tagIds: string[]
+  /** Vietnamese label shown in the card */
+  label: string
+  /** Smaller subtitle / mood text */
+  subtitle: string
+  /** Small badge above label, e.g. "BỘ SƯU TẬP #01" */
+  badge?: string
+  /** Right-side label, e.g. "HOT TREND" */
+  badgeRight?: string
+  /** One of the preset color themes */
+  theme: 'pink' | 'orange' | 'blue' | 'green' | 'purple'
+  /** Number of posters to show */
+  count?: number
+  /** Makes the card take up 2 columns in an md:grid-cols-3 layout */
+  hero?: boolean
+  /** Description text shown only in hero mode */
+  description?: string
+  /** Filter-search URL query string, e.g. "?tags=uuid" */
+  filterHref?: string
+  /** Initial data loaded from the server */
+  initialData?: DataResponse<Manga>
+}
+
 /* ─────────────────────────── GenreCollectionCard ─────────────────────────── */
 export default function GenreCollectionCard({
   tagIds,
@@ -131,10 +156,12 @@ export default function GenreCollectionCard({
   hero = false,
   description,
   filterHref,
+  initialData,
 }: GenreCardConfig) {
-  const { data, isLoading } = useQuery(
-    getTopMangaByTagId({ id: tagIds, offset: 0, limit: count })
-  )
+  const { data, isLoading } = useQuery({
+    ...getTopMangaByTagId({ id: tagIds, offset: 0, limit: count }),
+    initialData
+  })
 
   const t = THEME[theme]
   const mangas = data?.data ?? []

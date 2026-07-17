@@ -8,10 +8,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { getNewManga } from '@/codebase/api/manga/search-manga'
-import Loading from '../status/Loading'
 import Error from '../status/error'
 import { MangaStatus } from '@/codebase/constants/enums'
 import { getMangaInfo } from '@/codebase/utils/manga'
+import { Manga, DataResponse } from '@/codebase/api/paginate'
 
 import 'swiper/css'
 import 'swiper/css/pagination'
@@ -19,16 +19,20 @@ import 'swiper/css/effect-fade'
 
 interface Props {
   id?: string
+  initialData?: DataResponse<Manga>
 }
 
-const SlideMangaCardFullWidth: React.FC<Props> = ({ id }) => {
+const SlideMangaCardFullWidth: React.FC<Props> = ({ id, initialData }) => {
   // const router = useRouter()
-  const { data: newManga, isLoading, isError } = useQuery(getNewManga({ limit: 5 }))
+  const { data: newManga, isLoading, isError } = useQuery({
+    ...getNewManga({ limit: 5 }),
+    initialData
+  })
 
   if (isLoading)
     return (
-      <div className='h-[70vh] flex items-center justify-center'>
-        <Loading />
+      <div className='h-[70vh] md:h-[80vh] w-full bg-white/5 animate-pulse rounded-[3rem] flex items-center justify-center'>
+        <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
       </div>
     )
   if (isError) return <Error />

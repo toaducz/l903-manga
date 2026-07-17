@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState } from 'react'
 import { Manga } from '@/codebase/api/paginate'
 import Image from 'next/image'

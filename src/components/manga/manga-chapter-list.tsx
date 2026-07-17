@@ -3,7 +3,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { getChaptersByMangaId } from '@/codebase/api/manga/get-chapter'
 import React, { useState } from 'react'
-import Loading from '../status/Loading'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import Error from '../status/error'
@@ -14,6 +13,29 @@ import { motion } from 'framer-motion'
 import { FiArrowUp, FiArrowDown } from 'react-icons/fi'
 import Link from 'next/link'
 import { saveReaderContext } from '@/codebase/utils/reader-context'
+
+function ChapterListSkeleton() {
+  return (
+    <div className='space-y-4 w-full'>
+      <div className='flex items-center justify-between gap-4'>
+        <div className='w-40 h-8 bg-white/5 rounded-lg animate-pulse' />
+        <div className='w-28 h-8 bg-white/5 rounded-lg animate-pulse' />
+      </div>
+      {Array.from({ length: 5 }).map((_, index) => (
+        <div
+          key={index}
+          className='p-4 rounded-xl border border-white/5 bg-white/5 animate-pulse flex items-center justify-between h-16'
+        >
+          <div className='space-y-2 flex-1'>
+            <div className='h-4 bg-white/10 rounded w-1/3' />
+            <div className='h-3 bg-white/10 rounded w-1/4' />
+          </div>
+          <div className='w-20 h-3 bg-white/10 rounded' />
+        </div>
+      ))}
+    </div>
+  )
+}
 
 interface MangaChaptersListProps {
   mangaId: string
@@ -70,7 +92,7 @@ const MangaChaptersList: React.FC<MangaChaptersListProps> = ({
     setLocalOffset(newOffset)
   }
 
-  if (isLoading) return <Loading />
+  if (isLoading) return <ChapterListSkeleton />
   if (isError || !chapter) return <Error />
 
   return (

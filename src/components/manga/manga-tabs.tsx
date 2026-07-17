@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import MangaByTagPage from '@/components/views/manga-by-tag-page'
 import Link from 'next/link'
+import { Manga, DataResponse } from '@/codebase/api/paginate'
 
 const demographics = [
   { key: 'shounen', label: 'Shounen' },
@@ -11,7 +12,11 @@ const demographics = [
   { key: 'shoujo', label: 'Shoujo' }
 ]
 
-export default function MangaTabs() {
+interface MangaTabsProps {
+  initialShounenData?: DataResponse<Manga>
+}
+
+export default function MangaTabs({ initialShounenData }: MangaTabsProps) {
   const [activeTab, setActiveTab] = useState('shounen')
 
   return (
@@ -45,7 +50,12 @@ export default function MangaTabs() {
             exit={{ opacity: 0, y: -30 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
-            <MangaByTagPage limitManga={12} publicationDemographic={activeTab} pagination={false} />
+            <MangaByTagPage
+              limitManga={12}
+              publicationDemographic={activeTab}
+              pagination={false}
+              initialData={activeTab === 'shounen' ? initialShounenData : undefined}
+            />
             
             <div className='flex justify-center mt-12'>
               <Link

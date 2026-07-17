@@ -3,7 +3,6 @@ import { useState, useMemo } from 'react'
 import { getMangaById } from '@/codebase/api/manga/get-manga-by-id'
 import { Manga } from '@/codebase/api/paginate'
 import MangaItems from './manga-items'
-import Loading from '../status/Loading'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 
@@ -75,9 +74,11 @@ export default function RelatedManga({ ids }: RelatedMangaProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className='min-h-[400px] flex items-center justify-center'
+            className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6'
           >
-            <Loading />
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className='aspect-[2/3] rounded-2xl bg-white/5 border border-white/5 animate-pulse' />
+            ))}
           </motion.div>
         ) : isError ? (
           <div className='text-red-400 font-bold'>Failed to load related works.</div>

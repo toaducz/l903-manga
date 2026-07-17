@@ -1,44 +1,55 @@
-'use client'
-
-import { Suspense } from 'react'
-import { useParams } from 'next/navigation'
-import { useQuery } from '@tanstack/react-query'
 import { getMangaById } from '@/codebase/api/manga/get-manga-by-id'
 import MangaDetailPage from '@/components/views/manga-detail-page'
 import MangaDetailMobile from '@/app/manga-detail/components/manga-detail-mobile'
-import Loading from '@/components/status/Loading'
-import Error from '@/components/status/error'
+import ErrorComponent from '@/components/status/error'
+import { QueryFunctionContext, QueryKey } from '@tanstack/react-query'
 
-export default function MangaDetailPageWrapper() {
-  return (
-    <Suspense fallback={<Loading />}>
-      <MangaDetailContent />
-    </Suspense>
-  )
+export const revalidate = 3600 // Cache manga details for 1 hour on CDN
+
+interface Props {
+  params: Promise<{ id: string }>
 }
 
-function MangaDetailContent() {
-  const params = useParams()
-  const id = params.id as string
+interface QueryOptionsWithFn<T, K extends QueryKey = QueryKey> {
+  queryFn?: (context: QueryFunctionContext<K>) => T | Promise<T>
+}
 
-  const { data: manga, isFetching, isError } = useQuery(getMangaById({ id }))
-
-  if (isFetching) return <Loading />
-
-  if (isError) return <Error />
-
-  if (!manga?.data) {
-    return <Error message='Không tìm thấy truyện' />
+async function fetchQuery<T, K extends QueryKey = QueryKey>(
+  options: QueryOptionsWithFn<T, K>
+): Promise<T> {
+  if (!options.queryFn) {
+    throw new Error('queryFn is undefined')
   }
+  const context = {
+    queryKey: [] as unknown as K,
+    signal: new AbortController().signal,
+    meta: undefined
+  }
+  return Promise.resolve(options.queryFn(context as unknown as QueryFunctionContext<K>))
+}
 
-  return (
-    <div className="bg-black">
-      <div className="hidden md:block">
-        <MangaDetailPage manga={manga.data} />
+export default async function MangaDetailPageWrapper({ params }: Props) {
+  const { id } = await params
+
+  try {
+    const manga = await fetchQuery(getMangaById({ id }))
+
+    if (!manga?.data) {
+      return <ErrorComponent message='Không tìm thấy truyện' />
+    }
+
+    return (
+      <div className="bg-black">
+        <div className="hidden md:block">
+          <MangaDetailPage manga={manga.data} />
+        </div>
+        <div className="block md:hidden">
+          <MangaDetailMobile manga={manga.data} />
+        </div>
       </div>
-      <div className="block md:hidden">
-        <MangaDetailMobile manga={manga.data} />
-      </div>
-    </div>
-  )
+    )
+  } catch (error) {
+    console.error('Failed to fetch manga details on server', error)
+    return <ErrorComponent message='Lỗi khi tải thông tin truyện từ server. Vui lòng kiểm tra lại đường truyền mạng hoặc liên kết.' />
+  }
 }

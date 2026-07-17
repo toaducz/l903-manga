@@ -17,7 +17,7 @@ export default function SearchResultPage({ title }: SearchProps) {
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  const limit = 20
+  const limit = 18
   const offset = useMemo(() => parseInt(searchParams.get('offset') || '0', 10), [searchParams])
   const setOffset = (newOffset: number) => {
     const params = new URLSearchParams(searchParams.toString())
