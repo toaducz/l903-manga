@@ -99,7 +99,7 @@ function HistoryItem({ item }: HistoryItemProps) {
 
   const filename = covers?.data[0].attributes.fileName
   const coverImageUrl = filename
-    ? `/api/image?url=${encodeURIComponent(`https://uploads.mangadex.org/covers/${item.mangaId}/${filename}`)}`
+    ? `/api/image?url=${encodeURIComponent(`https://uploads.mangadex.org/covers/${item.mangaId}/${filename}.256.jpg`)}`
     : '/no-image.jpg'
 
   // console.log(coverImageUrl)

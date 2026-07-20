@@ -27,7 +27,7 @@ export function getMangaInfo(manga: Manga | null | undefined) {
   const coverArt = relationships.find((rel) => rel.type === 'cover_art')
   const coverArtFileName = coverArt?.attributes?.fileName
   
-  // Tải thumbnail 256px từ CDN MangaDex (siêu nhẹ ~20-50KB thay vì 2-5MB)
+  // Tải thumbnail 256px từ CDN MangaDex (siêu nhẹ ~20-50KB)
   const coverImageUrl = coverArtFileName
     ? `https://uploads.mangadex.org/covers/${manga.id}/${coverArtFileName}.256.jpg`
     : ''
@@ -36,8 +36,7 @@ export function getMangaInfo(manga: Manga | null | undefined) {
     ? `https://uploads.mangadex.org/covers/${manga.id}/${coverArtFileName}`
     : ''
 
-  // Chuyển proxyImageUrl trỏ trực tiếp đến coverImageUrl để loại bỏ các serverless function request
-  const proxyImageUrl = coverImageUrl
+  const proxyImageUrl = coverImageUrl ? `/api/image?url=${encodeURIComponent(coverImageUrl)}` : ''
 
   return { title, subTitle, description, coverImageUrl, coverFullUrl, proxyImageUrl }
 }
