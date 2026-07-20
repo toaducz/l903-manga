@@ -11,13 +11,20 @@ const nextConfig: NextConfig = {
     ]
   },
   images: {
-    domains: ['mangadex.network'], // wildcard không được dùng ở đây
+    domains: ['mangadex.network', 'uploads.mangadex.org'],
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**.mangadex.network' // hỗ trợ subdomain động
+        hostname: '**.mangadex.network'
+      },
+      {
+        protocol: 'https',
+        hostname: 'uploads.mangadex.org'
       }
     ]
+  },
+  experimental: {
+    optimizePackageImports: ['react-icons', 'date-fns', 'framer-motion']
   }
 }
 

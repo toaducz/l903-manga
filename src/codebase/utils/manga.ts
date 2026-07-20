@@ -1,7 +1,7 @@
 import { Manga } from '@/codebase/api/paginate'
 
 export function getMangaInfo(manga: Manga | null | undefined) {
-  if (!manga) return { title: '', subTitle: '', description: '', coverImageUrl: '', proxyImageUrl: '' }
+  if (!manga) return { title: '', subTitle: '', description: '', coverImageUrl: '', coverFullUrl: '', proxyImageUrl: '' }
 
   const attributes = manga.attributes || {}
   const relationships = manga.relationships || []
@@ -26,10 +26,18 @@ export function getMangaInfo(manga: Manga | null | undefined) {
 
   const coverArt = relationships.find((rel) => rel.type === 'cover_art')
   const coverArtFileName = coverArt?.attributes?.fileName
+  
+  // Tải thumbnail 256px từ CDN MangaDex (siêu nhẹ ~20-50KB thay vì 2-5MB)
   const coverImageUrl = coverArtFileName
+    ? `https://uploads.mangadex.org/covers/${manga.id}/${coverArtFileName}.256.jpg`
+    : ''
+  
+  const coverFullUrl = coverArtFileName
     ? `https://uploads.mangadex.org/covers/${manga.id}/${coverArtFileName}`
     : ''
-  const proxyImageUrl = coverImageUrl ? `/api/image?url=${encodeURIComponent(coverImageUrl)}` : ''
 
-  return { title, subTitle, description, coverImageUrl, proxyImageUrl }
+  // Chuyển proxyImageUrl trỏ trực tiếp đến coverImageUrl để loại bỏ các serverless function request
+  const proxyImageUrl = coverImageUrl
+
+  return { title, subTitle, description, coverImageUrl, coverFullUrl, proxyImageUrl }
 }

@@ -100,22 +100,29 @@ function ReaderContent() {
 
   useEffect(() => {
     let lastScrollY = window.scrollY
+    let ticking = false
 
     const handleScroll = () => {
-      const currentScrollY = window.scrollY
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight
-      const progress = (currentScrollY / totalHeight) * 100
-      setScrollProgress(progress)
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY
+          const totalHeight = document.documentElement.scrollHeight - window.innerHeight
+          const progress = totalHeight > 0 ? (currentScrollY / totalHeight) * 100 : 0
+          setScrollProgress(progress)
 
-      if (currentScrollY > 200 && showControls && !showSettings && !showChapters) {
-        if (currentScrollY - lastScrollY > 15) {
-          setShowControls(false)
-          lastScrollY = currentScrollY
-        } else if (currentScrollY < lastScrollY) {
-          lastScrollY = currentScrollY
-        }
-      } else {
-        lastScrollY = currentScrollY
+          if (currentScrollY > 200 && showControls && !showSettings && !showChapters) {
+            if (currentScrollY - lastScrollY > 15) {
+              setShowControls(false)
+              lastScrollY = currentScrollY
+            } else if (currentScrollY < lastScrollY) {
+              lastScrollY = currentScrollY
+            }
+          } else {
+            lastScrollY = currentScrollY
+          }
+          ticking = false
+        })
+        ticking = true
       }
     }
 
@@ -167,9 +174,11 @@ function ReaderContent() {
           <div className='w-full max-w-4xl flex flex-col gap-0'>
             {images?.chapter?.data.map((filename: string, index: number) => (
               <ImageWithLoading
-                key={index}
-                src={`/api/image?url=${encodeURIComponent(`${images.baseUrl}/data/${images.chapter.hash}/${filename}`)}`}
+                key={filename || index}
+                src={`${images.baseUrl}/data/${images.chapter.hash}/${filename}`}
                 alt={`${title} - Chương ${number} - Trang ${index + 1}`}
+                loading={index < 2 ? 'eager' : 'lazy'}
+                priority={index < 2}
               />
             ))}
           </div>
