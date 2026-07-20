@@ -36,7 +36,7 @@ export const ImageWithLoading = ({
           loading={loading}
           priority={priority}
           onLoad={() => setIsLoaded(true)}
-          className={`rounded shadow-lg transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`rounded shadow-lg ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
         />
       </div>
     </div>

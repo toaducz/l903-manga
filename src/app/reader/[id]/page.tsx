@@ -163,7 +163,6 @@ function ReaderContent() {
     <div className='bg-black min-h-screen'>
       {/* Manga Content Container with Brightness Filter */}
       <div
-        className='transition-all duration-300'
         style={{ filter: `brightness(${brightness}%)` }}
         onClick={() => {
           if (!showChapters && !showSettings) setShowControls(!showControls)

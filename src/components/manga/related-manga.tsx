@@ -56,10 +56,11 @@ export default function RelatedManga({ ids }: RelatedMangaProps) {
             <button
               key={r.id}
               onClick={() => setSelectedRating(r.id as 'all' | 'hide-pornographic')}
-              className={`px-6 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer ${selectedRating === r.id
+              className={`px-6 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer ${
+                selectedRating === r.id
                   ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
                   : 'text-gray-400 hover:text-white'
-                }`}
+              }`}
             >
               {r.label}
             </button>
@@ -81,7 +82,7 @@ export default function RelatedManga({ ids }: RelatedMangaProps) {
             ))}
           </motion.div>
         ) : isError ? (
-          <div className='text-red-400 font-bold'>Failed to load related works.</div>
+          <div className='text-red-400 font-bold'>Lỗi.</div>
         ) : (
           <motion.div
             key='grid'
@@ -101,7 +102,7 @@ export default function RelatedManga({ ids }: RelatedMangaProps) {
                 </motion.div>
               ))
             ) : (
-              <div className='text-gray-400 text-center col-span-full py-20'>No matches found for your filter.</div>
+              <div className='text-gray-400 text-center col-span-full py-20'>Không có kết quả.</div>
             )}
           </motion.div>
         )}
@@ -113,7 +114,7 @@ export default function RelatedManga({ ids }: RelatedMangaProps) {
           <button
             onClick={() => setPage(prev => Math.max(prev - 1, 0))}
             disabled={page === 0}
-            className='p-4 glass-card rounded-full text-white disabled:opacity-20 hover:bg-white/10 transition-all active:scale-90'
+            className='p-4 glass-card rounded-full text-white disabled:opacity-20 hover:bg-white/10 active:scale-90'
           >
             <FiChevronLeft size={24} />
           </button>
@@ -128,7 +129,7 @@ export default function RelatedManga({ ids }: RelatedMangaProps) {
           <button
             onClick={() => setPage(prev => Math.min(prev + 1, totalPages - 1))}
             disabled={page >= totalPages - 1}
-            className='p-4 glass-card rounded-full text-white disabled:opacity-20 hover:bg-white/10 transition-all active:scale-90'
+            className='p-4 glass-card rounded-full text-white disabled:opacity-20 hover:bg-white/10 active:scale-90'
           >
             <FiChevronRight size={24} />
           </button>

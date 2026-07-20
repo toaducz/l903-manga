@@ -56,11 +56,11 @@ export default function MangaTabs({ initialShounenData }: MangaTabsProps) {
               pagination={false}
               initialData={activeTab === 'shounen' ? initialShounenData : undefined}
             />
-            
+
             <div className='flex justify-center mt-12'>
               <Link
                 href={`/demographics/${activeTab}?name=${demographics.find(d => d.key === activeTab)?.label}`}
-                className='px-8 py-3.5 glass-card rounded-2xl text-xs font-black uppercase tracking-[0.2em] text-white hover:bg-white/10 hover:border-primary/30 transition-all cursor-pointer active:scale-95'
+                className='px-8 py-3.5 glass-card rounded-2xl text-xs font-black uppercase tracking-[0.2em] text-white hover:bg-white/10 hover:border-primary/30 cursor-pointer active:scale-95'
               >
                 Xem tất cả {demographics.find(d => d.key === activeTab)?.label}
               </Link>
