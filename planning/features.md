@@ -1,18 +1,17 @@
 # Features & Roadmap
 
 ## Current Features
-- **Cinematic Experience**: Immersive Manga Detail page with "Cinematic Hero" headers, seamless gradient blending, and premium typography.
-- **Bento Collections**: Modern, card-based homepage layout using a "Bento Grid" system for genre and mood collections.
-- **Manga Discovery**: Browse by categories, popular, and latest updates with stable responsive rendering.
-- **Advanced Search**: Filter and find manga by genre, status, and authors.
-- **Manga Reader**: High-performance reader supporting multiple modes (vertical/horizontal) with brightness and chapter navigation controls.
-- **Reading History**: Automatically tracks progress and allows resuming from where the user left off.
+- **Cinematic Experience**: Manga Detail page with hero banner, responsive switcher (`MangaDetailResponsive` mounting only Desktop or Mobile view), metadata, and chapter/related tabs.
+- **Bento Collections**: Homepage layout (`src/app/page.tsx`) with server-side `Promise.allSettled` prefetching, genre collection cards, and demographic tabs.
+- **Manga Discovery**: Browse by categories (`/genres`, `/genres/[id]`), demographics (`/demographics/[id]`), recommendations (`/recommendation`), and random manga (`/random`).
+- **Advanced Search**: Search (`/search`) and debounced filter search (`/filter-search`) by tags, demographic, year, follow count, and latest chapter.
+- **Manga Reader**: Vertical-scrolling reader (`/reader/[id]`) with lightweight dimmer-based brightness control, GPU-composited scroll progress bar (`ReaderScrollProgress`), and chapter navigation.
+- **Reading History**: Automatically tracks reading progress in `localStorage` (`/reading-history`).
 - **Social & Sharing**: Integrated "Copy to Clipboard" sharing feature with instant UI feedback.
-- **Mobile Optimized**: Fully responsive design with specific optimizations for mobile interactions and layouts.
+- **Authentication & Self-Host Gate**: `/login` and `/self-host` routes integrated with JWT middleware.
 
 ## Planned Features / Roadmap
-- **User Accounts**: Profile management, bookmarks, and personalized recommendations (Heart button currently in placeholder state).
+- **Webtoon / Horizontal Reader Mode**: Currently marked as upcoming (`Webtoon (sắp có?)`) in the reader settings panel.
+- **User Accounts & Library**: Profile management and bookmarks (Heart / Library buttons currently disabled).
 - **Offline Reading**: Support for downloading chapters for offline access (PWA features).
-- **Advanced Settings**: More customizable reader transition effects and color themes.
 - **Multi-language Support**: Interface and content in multiple languages.
-- **Zalo Integration**: Full support for Zalo Mini Program environment.

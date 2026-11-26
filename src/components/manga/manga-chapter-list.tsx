@@ -2,14 +2,12 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { getChaptersByMangaId } from '@/codebase/api/manga/get-chapter'
-import React, { useState } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Error from '../status/error'
 import { getLanguageName } from '@/codebase/constants/enums'
 import { formatDate } from '@/codebase/utils/format'
 import Pagination from '../common/pagination'
-import { motion } from 'framer-motion'
 import { FiArrowUp, FiArrowDown } from 'react-icons/fi'
 import Link from 'next/link'
 import { saveReaderContext } from '@/codebase/utils/reader-context'
@@ -55,7 +53,6 @@ const MangaChaptersList: React.FC<MangaChaptersListProps> = ({
   order
 }) => {
   const searchParams = useSearchParams()
-  const router = useRouter()
   const limit = 20
   const [localOffset, setLocalOffset] = useState<number>(() => {
     if (offsetParams !== undefined && offsetParams !== null) return offsetParams
@@ -142,13 +139,11 @@ const MangaChaptersList: React.FC<MangaChaptersListProps> = ({
             </Link>
           </div>
         ) : (
-          chapter.data.map((item, index) => {
+          chapter.data.map(item => {
             const isActive = item.id === chapterId
             return (
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.03 }}
+              <Link
+                href={`/reader/${item.id}`}
                 key={item.id}
                 onClick={() => {
                   saveReaderContext({
@@ -158,9 +153,8 @@ const MangaChaptersList: React.FC<MangaChaptersListProps> = ({
                     langValue: lang,
                     order: sortOrder
                   })
-                  router.push(`/reader/${item.id}`)
                 }}
-                className={`group relative p-4 rounded-xl border transition-all cursor-pointer ${isActive
+                className={`block group relative p-4 rounded-xl border transition-colors duration-200 cursor-pointer ${isActive
                   ? 'bg-primary/10 border-primary/40 ring-1 ring-primary/40'
                   : 'glass-card border-white/5 hover:border-primary/40 hover:bg-white/10'
                   }`}
@@ -171,7 +165,7 @@ const MangaChaptersList: React.FC<MangaChaptersListProps> = ({
                       <span className={`text-sm font-black tracking-tight ${isActive ? 'text-primary' : 'text-white'}`}>
                         CHƯƠNG {item.attributes.chapter ?? 'Oneshot'}
                       </span>
-                      {isActive && <span className='w-1.5 h-1.5 rounded-full bg-primary neon-glow animate-pulse' />}
+                      {isActive && <span className='w-1.5 h-1.5 rounded-full bg-primary neon-glow' />}
                     </div>
                     <p className='text-xs text-gray-400 font-medium line-clamp-1'>
                       {item.attributes.title || 'Chưa có tiêu đề'}
@@ -189,8 +183,8 @@ const MangaChaptersList: React.FC<MangaChaptersListProps> = ({
                 </div>
 
                 {/* Hover Indicator */}
-                <div className='absolute left-0 top-1/2 -translate-y-1/2 w-1 h-0 group-hover:h-1/2 bg-primary transition-all rounded-r-full' />
-              </motion.div>
+                <div className='absolute left-0 top-1/2 -translate-y-1/2 w-1 h-0 group-hover:h-1/2 bg-primary transition-all duration-200 rounded-r-full' />
+              </Link>
             )
           })
         )}

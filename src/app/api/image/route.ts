@@ -32,15 +32,25 @@ export async function GET(req: NextRequest) {
     }
 
     const contentType = res.headers.get('content-type') || 'image/png'
+    const contentLength = res.headers.get('content-length')
+    const headers: Record<string, string> = {
+      'Content-Type': contentType,
+      'Cache-Control': 'public, max-age=31536000, immutable'
+    }
+    if (contentLength) {
+      headers['Content-Length'] = contentLength
+    }
+
+    if (res.body) {
+      return new NextResponse(res.body, { status: 200, headers })
+    }
+
     const buffer = await res.arrayBuffer()
+    headers['Content-Length'] = buffer.byteLength.toString()
 
     return new NextResponse(buffer, {
       status: 200,
-      headers: {
-        'Content-Type': contentType,
-        'Cache-Control': 'public, max-age=31536000, immutable',
-        'Content-Length': buffer.byteLength.toString()
-      }
+      headers
     })
   } catch (err) {
     console.error('Proxy error:', err)

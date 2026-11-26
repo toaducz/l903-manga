@@ -5,7 +5,7 @@ import MangaItems from '../manga/manga-items'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
 import { useQuery } from '@tanstack/react-query'
-import Loading from '../status/Loading'
+import Loading from '../status/loading'
 import Error from '../status/error'
 import { getTopMangaByTagId } from '@/codebase/api/manga/get-top-manga-by-tag-id'
 import Link from 'next/link'
@@ -47,14 +47,14 @@ const SlideMangaCard: React.FC<Props> = ({ id, publicationDemographic }) => {
         className='pb-4 pt-25'
         autoplay={{ delay: 5000, disableOnInteraction: false }}
         style={{ display: 'flex', justifyContent: 'center' }}
-      // breakpoints={{
-      //   0: {
-      //     slidesPerView: 1,
-      //   },
-      //   768: {
-      //     slidesPerView: 'auto',
-      //   },
-      // }}
+        // breakpoints={{
+        //   0: {
+        //     slidesPerView: 1,
+        //   },
+        //   768: {
+        //     slidesPerView: 'auto',
+        //   },
+        // }}
       >
         {newManga?.data.map(manga => (
           <SwiperSlide key={manga.id} style={{ width: '300px' }}>

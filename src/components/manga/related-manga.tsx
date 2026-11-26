@@ -3,7 +3,6 @@ import { useState, useMemo } from 'react'
 import { getMangaById } from '@/codebase/api/manga/get-manga-by-id'
 import { Manga } from '@/codebase/api/paginate'
 import MangaItems from './manga-items'
-import { motion, AnimatePresence } from 'framer-motion'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 
 type RelatedMangaProps = {
@@ -68,45 +67,25 @@ export default function RelatedManga({ ids }: RelatedMangaProps) {
         </div>
       </div>
 
-      <AnimatePresence mode='wait'>
-        {isLoading ? (
-          <motion.div
-            key='loading'
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6'
-          >
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className='aspect-[2/3] rounded-2xl bg-white/5 border border-white/5 animate-pulse' />
-            ))}
-          </motion.div>
-        ) : isError ? (
-          <div className='text-red-400 font-bold'>Lỗi.</div>
-        ) : (
-          <motion.div
-            key='grid'
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6'
-          >
-            {displayedManga.length > 0 ? (
-              displayedManga.map((manga, index) => (
-                <motion.div
-                  key={manga.id}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.05 }}
-                >
-                  <MangaItems manga={manga} isResponsive={false} />
-                </motion.div>
-              ))
-            ) : (
-              <div className='text-gray-400 text-center col-span-full py-20'>Không có kết quả.</div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {isLoading ? (
+        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6'>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className='aspect-[2/3] rounded-2xl bg-white/5 border border-white/5 animate-pulse' />
+          ))}
+        </div>
+      ) : isError ? (
+        <div className='text-red-400 font-bold'>Lỗi.</div>
+      ) : (
+        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6'>
+          {displayedManga.length > 0 ? (
+            displayedManga.map(manga => (
+              <MangaItems key={manga.id} manga={manga} isResponsive={false} />
+            ))
+          ) : (
+            <div className='text-gray-400 text-center col-span-full py-20'>Không có kết quả.</div>
+          )}
+        </div>
+      )}
 
       {/* Modern Pagination */}
       {totalPages > 1 && (
@@ -114,7 +93,7 @@ export default function RelatedManga({ ids }: RelatedMangaProps) {
           <button
             onClick={() => setPage(prev => Math.max(prev - 1, 0))}
             disabled={page === 0}
-            className='p-4 glass-card rounded-full text-white disabled:opacity-20 hover:bg-white/10 active:scale-90'
+            className='p-4 glass-card rounded-full text-white disabled:opacity-20 disabled:cursor-not-allowed hover:bg-white/10 transition-colors duration-200 cursor-pointer'
           >
             <FiChevronLeft size={24} />
           </button>
@@ -129,7 +108,7 @@ export default function RelatedManga({ ids }: RelatedMangaProps) {
           <button
             onClick={() => setPage(prev => Math.min(prev + 1, totalPages - 1))}
             disabled={page >= totalPages - 1}
-            className='p-4 glass-card rounded-full text-white disabled:opacity-20 hover:bg-white/10 active:scale-90'
+            className='p-4 glass-card rounded-full text-white disabled:opacity-20 disabled:cursor-not-allowed hover:bg-white/10 transition-colors duration-200 cursor-pointer'
           >
             <FiChevronRight size={24} />
           </button>

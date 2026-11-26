@@ -69,6 +69,6 @@ export const GetMangaByFilterSearch = ({
 
       return request<DataResponse<Manga>>('manga/', 'GET', params)
     },
-    staleTime: 60 * 60 * 60
+    staleTime: 60 * 60 * 1000
   })
 }

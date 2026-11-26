@@ -7,14 +7,12 @@ const ScrollToTopButton = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 200) {
-        setVisible(true)
-      } else {
-        setVisible(false)
-      }
+      const next = window.scrollY > 200
+      setVisible(prev => (prev === next ? prev : next))
     }
 
-    window.addEventListener('scroll', handleScroll)
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -25,8 +23,9 @@ const ScrollToTopButton = () => {
   return (
     <button
       onClick={scrollToTop}
-      className={`w-13 fixed bottom-20 right-6 z-50 p-3 bg-slate-800 hover:bg-slate-600 text-white rounded-full shadow-lg transition-opacity transition-transform duration-500 ease-in-out ${
-        visible ? 'opacity-100 translate-x-0' : 'opacity-30 translate-x-4'
+      aria-label='Cuộn lên đầu trang'
+      className={`w-13 fixed bottom-20 right-6 z-50 p-3 bg-slate-800 hover:bg-slate-600 text-white rounded-full shadow-lg transition-colors duration-200 cursor-pointer ${
+        visible ? 'opacity-100' : 'opacity-30'
       }`}
     >
       ↑

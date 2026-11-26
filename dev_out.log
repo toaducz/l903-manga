@@ -1,0 +1,11 @@
+   ▲ Next.js 15.3.8 (Turbopack)
+   - Local:        http://localhost:3099
+   - Network:      http://172.28.160.1:3099
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Compiled middleware in 465ms
+ ✓ Ready in 3.7s
+ ○ Compiling /filter-search ...
+ ✓ Compiled /filter-search in 7.6s
+ GET /filter-search 200 in 11333ms

@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import Loading from '../status/Loading'
 import Image from 'next/image'
 
 interface ImageWithLoadingProps {
@@ -23,8 +22,11 @@ export const ImageWithLoading = ({
     <div>
       <div className={`relative w-full max-w-screen-md min-h-[500px] ${className}`}>
         {!isLoaded && (
-          <div className='absolute inset-0 flex items-center justify-center bg-gray-900 animate-pulse rounded shadow-lg'>
-            <Loading />
+          <div className='absolute inset-0 flex items-center justify-center bg-slate-900 rounded shadow-lg'>
+            <div className='flex flex-col items-center gap-3 text-gray-400'>
+              <div className='w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin' />
+              <span className='text-xs font-bold uppercase tracking-widest'>Đang tải trang...</span>
+            </div>
           </div>
         )}
         <Image

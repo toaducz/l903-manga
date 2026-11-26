@@ -21,15 +21,11 @@ Helper functions and logic-only files should be in kebab-case.
 - **Standard**: `format.ts`, `local-storage.ts`
 
 ### 4. React Components
-React components should follow **PascalCase**.
-- **Standard**: `MangaCard.tsx`, `ChapterList.tsx`, `ReaderHeader.tsx`
+Component filenames in `src/components/` and `src/app/*/components/` follow **kebab-case** in practice (e.g., `manga-items.tsx`, `manga-chapter-list.tsx`, `reader-scroll-progress.tsx`), while exported symbol names use **PascalCase** (`MangaItems`, `MangaChaptersList`).
+- **Legacy Exception**: `src/components/status/Loading.tsx` uses PascalCase filename.
 
 ### 5. Styles
-CSS modules or global style files should be in kebab-case.
-- **Standard**: `main-layout.module.css`, `global.css`
+Global styles and CSS files follow **kebab-case** (`globals.css`).
 
-## Migration Plan
-We will systematically rename existing files to match this standard:
-1.  Rename directories in `src/codebase/api/` to lowercase (e.g., `Manga` -> `manga`).
-2.  Rename all files inside API directories to `get-something.tsx`.
-3.  Update all imports across the project to reflect the new file names.
+## Migration Status
+The `src/codebase/api/` directories and files have been migrated to lowercase directories and kebab-case filenames (`author/`, `cover/`, `manga/`, `tag/`, `get-chapter.tsx`, `get-manga-by-id.tsx`, `search-manga.tsx`, `local-storage.ts`).

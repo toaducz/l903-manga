@@ -1,12 +1,27 @@
 'use client'
-import Kobo from '@/assets/gif/kobo.gif'
 import Image from 'next/image'
 
-export default function Loading() {
+interface LoadingProps {
+  fullScreen?: boolean
+}
+
+export default function Loading({ fullScreen = true }: LoadingProps) {
   return (
-    <div className='flex items-center justify-center min-h-screen bg-transparent'>
+    <div
+      className={`flex items-center justify-center bg-transparent ${
+        fullScreen ? 'min-h-screen' : 'py-16'
+      }`}
+    >
       <div>
-        <Image unoptimized src={Kobo} alt='Loading...' width={300} height={300} className='object-contain' priority />
+        <Image
+          unoptimized
+          src='/kobo.webp'
+          alt='Loading...'
+          width={300}
+          height={225}
+          className='object-contain'
+          priority={fullScreen}
+        />
       </div>
     </div>
   )

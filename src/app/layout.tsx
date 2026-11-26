@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import Script from 'next/script' // 1. Import next/script
 import '@/styles/globals.css'
 import QueryProvider from '@/app/provider'
-import NProgressInit from '@/components/common/NProgressInit'
+import NProgressInit from '@/components/common/n-progress-init'
 import { Suspense } from 'react'
 import ConditionalLayout from '@/components/layout/conditional-layout'
 

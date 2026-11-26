@@ -5,7 +5,7 @@ import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { useSearchParams } from 'next/navigation'
 import SearchResultPage from '@/components/views/search-resultt-page'
-import Loading from '@/components/status/Loading'
+import Loading from '@/components/status/loading'
 
 // Bọc phần tử cần sử dụng useSearchParams() bằng Suspense
 export default function SearchPage() {

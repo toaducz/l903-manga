@@ -3,7 +3,7 @@ import { jwtVerify, importSPKI, decodeJwt } from 'jose'
 import { formatKey } from '@/codebase/utils/format'
 
 const BYPASS_PREFIXES = ['/_next/', '/api/']
-const BYPASS_EXACT = ['/self-host', '/favicon.ico', '/robots.txt', '/login']
+const BYPASS_EXACT = ['/self-host', '/favicon.ico', '/robots.txt', '/login', '/kobo.webp']
 
 export async function middleware(request: NextRequest) {
   if (process.env.DISABLE_MIDDLEWARE === 'true') {
@@ -98,5 +98,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|api|img|favicon.ico).*)']
+  matcher: ['/((?!_next/static|_next/image|api|img|favicon.ico|kobo\\.webp).*)']
 }

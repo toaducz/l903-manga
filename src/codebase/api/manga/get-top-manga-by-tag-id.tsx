@@ -36,6 +36,6 @@ export const getTopMangaByTagId = ({
 
       return request<DataResponse<Manga>>('manga/', 'GET', params)
     },
-    staleTime: 60 * 60 * 100
+    staleTime: 60 * 60 * 1000
   })
 }

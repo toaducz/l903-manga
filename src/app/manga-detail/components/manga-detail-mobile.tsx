@@ -77,13 +77,13 @@ const MangaDetailMobile: React.FC<MangaDetailMobileProps> = ({ manga }) => {
         <div className='flex gap-2 pointer-events-auto'>
           <button
             onClick={() => router.back()}
-            className='p-2.5 bg-black/50 backdrop-blur-md rounded-full text-white active:scale-95'
+            className='p-2.5 bg-black/80 hover:bg-black rounded-full text-white transition-colors duration-200 cursor-pointer'
           >
             <FiArrowLeft size={20} />
           </button>
           <button
             onClick={() => router.push('/')}
-            className='p-2.5 bg-black/50 backdrop-blur-md rounded-full text-white active:scale-95'
+            className='p-2.5 bg-black/80 hover:bg-black rounded-full text-white transition-colors duration-200 cursor-pointer'
           >
             <FiHome size={20} />
           </button>
@@ -93,7 +93,7 @@ const MangaDetailMobile: React.FC<MangaDetailMobileProps> = ({ manga }) => {
             const success = await copyToClipboard(window.location.href)
             if (success) alert('Đã sao chép liên kết!')
           }}
-          className='p-2.5 bg-black/50 backdrop-blur-md rounded-full text-white pointer-events-auto active:scale-95'
+          className='p-2.5 bg-black/80 hover:bg-black rounded-full text-white pointer-events-auto transition-colors duration-200 cursor-pointer'
         >
           <FiShare2 size={20} />
         </button>
@@ -107,7 +107,7 @@ const MangaDetailMobile: React.FC<MangaDetailMobileProps> = ({ manga }) => {
           alt='Background'
           fill
           priority
-          className='object-cover object-top opacity-50 blur-sm'
+          className='object-cover object-top opacity-40'
         />
         <div className='absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent' />
       </div>
@@ -153,7 +153,7 @@ const MangaDetailMobile: React.FC<MangaDetailMobileProps> = ({ manga }) => {
             </div>
             {rating && (
               <div className='mt-2'>
-                <span className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${contentRatingColors[rating]} bg-black/80 backdrop-blur-sm`}>
+                <span className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${contentRatingColors[rating]} bg-black/85`}>
                   {ContentRating[rating]}
                 </span>
               </div>

@@ -7,11 +7,12 @@ import TagMultiSelect from '@/components/common/tag-multi-select'
 // import { Manga } from '@/codebase/api/paginate';
 import MangaItems from '@/components/manga/manga-items'
 import Pagination from '@/components/common/pagination'
-import Loading from '@/components/status/Loading'
+import Loading from '@/components/status/loading'
 import Error from '@/components/status/error'
 
 export default function AdvancedSearchPage() {
   const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [year, setYear] = useState<string>('desc')
   const [followedCount, setFollowedCount] = useState<string>('desc')
@@ -21,15 +22,21 @@ export default function AdvancedSearchPage() {
   const [offset, setOffset] = useState(0)
   const limit = 20
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search.trim())
+    }, 400)
+    return () => clearTimeout(timer)
+  }, [search])
+
   const {
     data: result,
     isFetching,
-    isError,
-    isSuccess
+    isError
   } = useQuery(
     GetMangaByFilterSearch({
       id: selectedTags,
-      title: search.trim(),
+      title: debouncedSearch,
       offset,
       limit,
       publicationDemographic,
@@ -42,27 +49,12 @@ export default function AdvancedSearchPage() {
 
   useEffect(() => {
     setOffset(0)
-  }, [search, selectedTags, year, followedCount, latestUploadedChapter, publicationDemographic])
-
-  // if (isFetching) {
-  //     return <Loading />
-  // }
-
-  // if (isError) {
-  //     return <Error />
-  // }
-
-  // if (result?.data.length === 0) {
-  //     return <Error message='Không có kết quả!' />
-  // }
-
-  if (isSuccess) {
-    // console.log(result)
-  }
+  }, [debouncedSearch, selectedTags, year, followedCount, latestUploadedChapter, publicationDemographic])
 
   // Xử lý tìm kiếm
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
+    setDebouncedSearch(search.trim())
     setOffset(0) // Reset offset khi tìm kiếm mới
   }
 
@@ -151,14 +143,14 @@ export default function AdvancedSearchPage() {
 
       {/* Kết quả tìm kiếm */}
       <div className='max-w-screen-2xl mx-auto mt-16 px-4 md:px-8'>
-        {isFetching && <Loading />}
+        {isFetching && <Loading fullScreen={false} />}
         {isError && <Error />}
         {result?.data?.length === 0 && <Error message='Không tìm thấy kết quả phù hợp!' />}
 
         {result?.data && (
           <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6 w-full'>
-            {result.data.map((manga, index) => (
-              <MangaItems key={index} manga={manga} isResponsive={false} />
+            {result.data.map(manga => (
+              <MangaItems key={manga.id} manga={manga} isResponsive={false} />
             ))}
           </div>
         )}

@@ -7,7 +7,7 @@ import { Chapter } from '@/codebase/api/manga/get-chapter'
 import { FaBookOpen, FaTrash } from 'react-icons/fa'
 import { ImageWithLoading } from '@/components/image/image-with-loading'
 import { getCover } from '@/codebase/api/cover/get-covers'
-import Loading from '@/components/status/Loading'
+import Loading from '@/components/status/loading'
 import ScrollToBottomButton from '@/components/layout/scroll/scroll-to-bottom'
 
 type ReadingItem = {
@@ -97,27 +97,23 @@ type HistoryItemProps = {
 function HistoryItem({ item }: HistoryItemProps) {
   const { data: covers, isLoading } = useQuery(getCover({ id: item.mangaId, limit: 1 }))
 
-  const filename = covers?.data[0].attributes.fileName
+  const filename = covers?.data?.[0]?.attributes?.fileName
   const coverImageUrl = filename
     ? `/api/image?url=${encodeURIComponent(`https://uploads.mangadex.org/covers/${item.mangaId}/${filename}.256.jpg`)}`
     : '/no-image.jpg'
 
-  // console.log(coverImageUrl)
-
   if (isLoading) {
-    ;<Loading />
+    return <Loading />
   }
 
   return (
     <Link
-      href={`/reader/${item.chapterId}?mangaId=${item.mangaId}&chapterId=${item.chapterId}&chapter=${encodeURIComponent(
-        JSON.stringify(item.chapter)
-      )}&number=${item.number}&lang=${item.lang}`}
+      href={`/reader/${item.chapterId}`}
       className='
-        w-full mx-auto group bg-white/10 backdrop-blur-md shadow-lg 
-        hover:shadow-xl hover:bg-white/20 transition-all duration-300 
-        md:max-w-[300px] md:rounded-xl md:p-6 md:transform md:hover:scale-105 md:scale-100
-        flex items-center p-3 rounded-lg mb-3 
+        w-full mx-auto group bg-white/10 shadow-lg 
+        hover:shadow-xl hover:bg-white/20 transition-colors duration-200 
+        md:max-w-[300px] md:rounded-xl md:p-6
+        flex items-center p-3 rounded-lg mb-3 cursor-pointer
         md:block
       '
     >

@@ -8,10 +8,11 @@ type AuthorByIdRequest = {
 
 export const getAuthorById = ({ id }: AuthorByIdRequest) => {
   return queryOptions({
-    queryKey: ['get-author-by-id'],
+    queryKey: ['get-author-by-id', id],
     queryFn: () =>
       request<Detail<Author>>(`author/${id}`, 'GET', {
         'includes[]': 'cover_art'
-      })
+      }),
+    enabled: !!id
   })
 }

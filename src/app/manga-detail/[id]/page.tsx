@@ -1,6 +1,5 @@
 import { getMangaById } from '@/codebase/api/manga/get-manga-by-id'
-import MangaDetailPage from '@/components/views/manga-detail-page'
-import MangaDetailMobile from '@/app/manga-detail/components/manga-detail-mobile'
+import MangaDetailResponsive from '@/app/manga-detail/components/manga-detail-responsive'
 import ErrorComponent from '@/components/status/error'
 import { QueryFunctionContext, QueryKey } from '@tanstack/react-query'
 
@@ -38,16 +37,7 @@ export default async function MangaDetailPageWrapper({ params }: Props) {
       return <ErrorComponent message='Không tìm thấy truyện' />
     }
 
-    return (
-      <div className="bg-black">
-        <div className="hidden md:block">
-          <MangaDetailPage manga={manga.data} />
-        </div>
-        <div className="block md:hidden">
-          <MangaDetailMobile manga={manga.data} />
-        </div>
-      </div>
-    )
+    return <MangaDetailResponsive manga={manga.data} />
   } catch (error) {
     console.error('Failed to fetch manga details on server', error)
     return <ErrorComponent message='Lỗi khi tải thông tin truyện từ server. Vui lòng kiểm tra lại đường truyền mạng hoặc liên kết.' />

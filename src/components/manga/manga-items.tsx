@@ -11,8 +11,6 @@ interface MangaCardProps {
 }
 
 const MangaItems: React.FC<MangaCardProps> = ({ manga, isResponsive = true }) => {
-  // const [isLoading, setIsLoading] = useState(true)
-
   const { title, proxyImageUrl } = getMangaInfo(manga)
 
   const status = MangaStatus[manga.attributes.status as keyof typeof MangaStatus] || manga.attributes.status
@@ -22,10 +20,10 @@ const MangaItems: React.FC<MangaCardProps> = ({ manga, isResponsive = true }) =>
   return (
     <Link
       href={`/manga-detail/${manga.id.trim()}`}
-      className={`block relative glass-card rounded-2xl shadow-xl cursor-pointer group overflow-hidden border-white/5 w-full hover:border-primary/30 transition-transform duration-200 active:scale-[0.98] ${
+      className={`block relative glass-card rounded-2xl shadow-lg cursor-pointer group overflow-hidden border-white/5 w-full hover:border-primary/40 transition-colors duration-200 ${
         isResponsive
-          ? 'flex flex-row sm:flex-col sm:aspect-[2/3] sm:hover:-translate-y-1 sm:hover:scale-[1.01]'
-          : 'flex flex-col aspect-[2/3] hover:-translate-y-1'
+          ? 'flex flex-row sm:flex-col sm:aspect-[2/3]'
+          : 'flex flex-col aspect-[2/3]'
       }`}
     >
       {/* Art Container */}
@@ -43,15 +41,12 @@ const MangaItems: React.FC<MangaCardProps> = ({ manga, isResponsive = true }) =>
           fill
           sizes='(max-width: 768px) 100vw, 300px'
           loading='lazy'
-          className={`object-cover group-hover:scale-105 `}
-          placeholder='blur'
-          blurDataURL='@/assets/image/mie.jpg'
+          className='object-cover'
         />
-        {/* {isLoading && <div className='absolute inset-0 bg-slate-800 animate-pulse' />} */}
 
         {/* Rating Badge - Only on poster mode for better space */}
         <div className={`absolute top-2 right-2 z-10 ${isResponsive ? 'hidden sm:block' : 'block'}`}>
-          <span className='px-2 py-0.5 bg-black/60 backdrop-blur-md rounded text-[7px] font-black text-white uppercase tracking-widest border border-white/10'>
+          <span className='px-2 py-0.5 bg-black/80 rounded text-[7px] font-black text-white uppercase tracking-widest border border-white/10'>
             {rating}
           </span>
         </div>
@@ -108,4 +103,4 @@ const MangaItems: React.FC<MangaCardProps> = ({ manga, isResponsive = true }) =>
   )
 }
 
-export default MangaItems
+export default React.memo(MangaItems)

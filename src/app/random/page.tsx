@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
 import { getRandom } from '@/codebase/api/manga/get-random'
 import MangaDetailPage from '@/components/views/manga-detail-page'
-import Loading from '@/components/status/Loading'
+import Loading from '@/components/status/loading'
 import Error from '@/components/status/error'
 
 function RandomPageContent() {

@@ -78,12 +78,12 @@ export default function RecommendationContentPage() {
           return (
             <Link
               href={`/manga-detail/${manga.id}`}
-              key={index}
+              key={manga.id}
               className={`group flex flex-col gap-6 cursor-pointer ${
                 index % 2 === 0 ? 'lg:-translate-y-5' : 'lg:translate-y-10'
               }`}
             >
-              <div className='relative aspect-[2/3] overflow-hidden bg-slate-900 rounded-lg border border-white/10'>
+              <div className='relative aspect-[2/3] overflow-hidden bg-slate-900 rounded-lg border border-white/10 group-hover:border-primary/40 transition-colors duration-200'>
                 <Image
                   unoptimized
                   src={proxyImageUrl}
@@ -95,21 +95,21 @@ export default function RecommendationContentPage() {
                 />
                 <div className='absolute inset-0 scrim-gradient opacity-60'></div>
                 {index === 0 && (
-                  <div className='absolute top-4 right-4 px-2 py-1 rounded bg-amber-500/20 border border-amber-500/40 backdrop-blur-md text-amber-500 text-[11px] font-bold uppercase tracking-widest z-10'>
+                  <div className='absolute top-4 right-4 px-2 py-1 rounded bg-amber-950/90 border border-amber-500/40 text-amber-400 text-[11px] font-bold uppercase tracking-widest z-10'>
                     Top 1
                   </div>
                 )}
               </div>
               <div className='flex flex-col gap-2'>
-                <h3 className='text-[20px] font-bold text-foreground group-hover:text-primary'>
+                <h3 className='text-[20px] font-bold text-foreground group-hover:text-primary transition-colors duration-200'>
                   {title}
                 </h3>
                 <p className='text-[14px] text-foreground/70 line-clamp-2'>
                   {description}
                 </p>
-                <button className='mt-2 w-max px-6 py-2 bg-primary text-primary-foreground text-[13px] font-bold rounded-lg cursor-pointer hover:opacity-90'>
+                <span className='mt-2 w-max px-6 py-2 bg-primary text-primary-foreground text-[13px] font-bold rounded-lg group-hover:opacity-90 transition-opacity duration-200'>
                   Đọc Ngay
-                </button>
+                </span>
               </div>
             </Link>
           )

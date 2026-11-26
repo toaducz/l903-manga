@@ -1,7 +1,7 @@
 'use client'
 
 import { searchManga } from '@/codebase/api/manga/search-manga'
-import Loading from '@/components/status/Loading'
+import Loading from '@/components/status/loading'
 import { useQuery } from '@tanstack/react-query'
 import MangaItems from '@/components/manga/manga-items'
 import Pagination from '@/components/common/pagination'
@@ -51,8 +51,8 @@ export default function SearchResultPage({ title }: SearchProps) {
       </div>
       <div className='w-full max-w-screen-2xl mx-auto'>
         <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6 w-full p-4'>
-          {result?.data?.map((manga, index) => (
-            <MangaItems key={index} manga={manga} isResponsive={false} />
+          {result?.data?.map(manga => (
+            <MangaItems key={manga.id} manga={manga} isResponsive={false} />
           ))}
         </div>
       </div>

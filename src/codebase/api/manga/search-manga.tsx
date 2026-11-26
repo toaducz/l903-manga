@@ -11,7 +11,7 @@ type SearchRequest = {
 
 export const searchManga = ({ title, offset, limit }: SearchRequest) => {
   return queryOptions({
-    queryKey: ['search', offset, title],
+    queryKey: ['search', offset, limit, title],
     queryFn: () =>
       request<DataResponse<Manga>>(`manga/`, 'GET', {
         title: title,
@@ -20,14 +20,14 @@ export const searchManga = ({ title, offset, limit }: SearchRequest) => {
         'availableTranslatedLanguage[]': 'en',
         'includes[]': 'cover_art',
         offset: offset
-      })
-    // staleTime: 60 * 60
+      }),
+    staleTime: 5 * 60 * 1000
   })
 }
 
 export const getNewManga = ({ offset = 0, limit = 10 }: CommonRequest) => {
   return queryOptions({
-    queryKey: ['get-new-manga', offset],
+    queryKey: ['get-new-manga', offset, limit],
     queryFn: () =>
       request<DataResponse<Manga>>(`manga/`, 'GET', {
         // 'order[updatedAt]': 'desc',
@@ -37,7 +37,7 @@ export const getNewManga = ({ offset = 0, limit = 10 }: CommonRequest) => {
         offset: offset,
         'order[latestUploadedChapter]': 'desc',
         'order[year]': 'desc'
-      })
-    // staleTime: 60 * 60
+      }),
+    staleTime: 60 * 60 * 1000
   })
 }

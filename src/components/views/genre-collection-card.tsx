@@ -11,14 +11,12 @@ import { FiArrowRight } from 'react-icons/fi'
 import { getMangaInfo } from '@/codebase/utils/manga'
 
 function MiniPoster({ manga }: { manga: Manga }) {
-  // const [loaded, setLoaded] = useState(false)
-
   const { title, proxyImageUrl: imgUrl } = getMangaInfo(manga)
 
   return (
     <Link
       href={`/manga-detail/${manga.id}`}
-      className='block relative aspect-[2/3] rounded-xl overflow-hidden cursor-pointer group border border-white/5 hover:border-white/20 transition-all duration-200 hover:-translate-y-1 hover:scale-[1.03] active:scale-[0.97] bg-slate-900'
+      className='block relative aspect-[2/3] rounded-xl overflow-hidden cursor-pointer group border border-white/5 hover:border-white/30 transition-colors duration-200 bg-slate-900'
     >
       {imgUrl && (
         <Image
@@ -28,13 +26,9 @@ function MiniPoster({ manga }: { manga: Manga }) {
           fill
           sizes='150px'
           loading='lazy'
-          className={`object-cover transition-all duration-500 group-hover:scale-110`}
-          // onLoad={() => setLoaded(true)}
-          placeholder='blur'
-          blurDataURL='@/assets/image/mie.jpg'
+          className='object-cover'
         />
       )}
-      {/* {!loaded && <div className='absolute inset-0 bg-slate-800 animate-pulse' />} */}
 
       {/* Gradient scrim + title */}
       <div className='absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-2.5'>
@@ -179,25 +173,22 @@ export default function GenreCollectionCard({
   if (hero) {
     /* ── Wide Hero Card: Vertical layout with immersive background ── */
     const firstManga = mangas[0]
-    const bgCoverArt = firstManga?.relationships.find(r => r.type === 'cover_art')
-    const bgFileName = bgCoverArt?.attributes?.fileName
-    const bgUrl = bgFileName
-      ? `/api/image?url=${encodeURIComponent(`https://uploads.mangadex.org/covers/${firstManga.id}/${bgFileName}`)}`
-      : ''
+    const bgUrl = firstManga ? getMangaInfo(firstManga).proxyImageUrl : ''
 
     return (
       <div className='md:col-span-2 relative group overflow-hidden rounded-[3rem] border border-white/5 glass-card flex flex-col min-h-[500px]'>
         {/* Background Image Layer */}
         {bgUrl && (
-          <div className='absolute inset-0 z-0 opacity-20 pointer-events-none transition-transform duration-1000 group-hover:scale-110'>
+          <div className='absolute inset-0 z-0 opacity-15 pointer-events-none'>
             <Image
               unoptimized
               src={bgUrl}
               alt='background'
               fill
-              className='object-cover blur-3xl scale-110'
+              loading='lazy'
+              className='object-cover'
             />
-            <div className='absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent' />
+            <div className='absolute inset-0 bg-gradient-to-t from-background via-background/85 to-transparent' />
           </div>
         )}
 

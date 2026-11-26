@@ -6,32 +6,35 @@ The project follows a modular structure, separating the presentation layer from 
 - `src/`: Main source code.
 - `public/`: Static assets.
 - `planning/`: Project documentation and planning files (this directory).
-- `config files`: `.prettierrc.js`, `next.config.ts`, `tsconfig.json`, `tailwind.config.ts`.
+- `config files`: `.prettierrc.js`, `eslint.config.mjs`, `next.config.ts`, `tsconfig.json`, `postcss.config.mjs`.
 
 ## Source Directory (`src/`)
 - `app/`: Next.js App Router routes and layouts.
 - `codebase/`: Core application logic (independent of UI).
 - `components/`: Reusable UI components.
-- `assets/`: Image and font assets.
-- `styles/`: Global styles and CSS modules.
-- `middleware.ts`: Next.js middleware for authentication and redirects.
+- `assets/`: Image, gif, and icon assets.
+- `styles/`: Global styles (`globals.css`).
+- `middleware.tsx`: Next.js middleware for JWT verification and `/self-host` redirects.
 
 ## Codebase Directory (`src/codebase/`)
 This directory contains the "brain" of the application:
-- `api/`: API service definitions and fetchers.
-- `constants/`: Global constants and configuration values.
-- `store/`: Global state management (Recoil atoms and selectors).
-- `utils/`: Helper functions and utility logic.
+- `api/`: API service definitions (`author/`, `cover/`, `manga/`, `tag/`) and `queryOptions` fetchers.
+- `constants/`: Global constants (`enums.ts`, `static.ts`).
+- `store/`: Legacy Recoil atom (`state.ts`).
+- `utils/`: Helper functions and utility logic (`request.ts`, `manga.ts`, `local-storage.ts`, `reader-context.ts`, `format.ts`, `translate.ts`, `copy-to-clipboard.ts`).
 
 ## App Router Structure (`src/app/`)
-- `homepage/`: Main landing page.
-- `manga-detail/`: Detailed information about a specific manga.
-- `manga-page/`: Paginated manga listings.
-- `reader/`: The core manga reading interface.
+- `page.tsx`: Main homepage with server prefetching.
+- `homepage/`: Landing/notice page.
+- `login/`: User login page.
+- `manga-detail/[id]/` & `manga-detail/components/`: Responsive manga detail view (`manga-detail-responsive.tsx`, `manga-detail-mobile.tsx`).
+- `manga-page/[id]/`, `genres/`, `demographics/[id]/`, `recommendation/`, `random/`: Discovery routes.
+- `reader/[id]/`: Core vertical manga reading interface.
 - `reading-history/`: User's reading progress tracking.
-- `search/` & `filter-search/`: Discovery features.
-- `self-host/`: Configuration or landing page for self-hosting.
-- `api/`: Server-side API routes.
+- `search/` & `filter-search/`: Search and multi-filter discovery routes.
+- `author-detail/`: Author information view.
+- `self-host/`: Self-hosting landing page.
+- `api/`: Server-side API routes (`image/`, `proxy/`, `translate/`).
 
 ## Naming Convention Note
-All directories and logic files follow the **kebab-case** standard (e.g., `get-manga-by-id.tsx`). React components follow **PascalCase**. See [naming_conventions.md](file:///d:/Personal%20Project/L903-Manga/planning/naming_conventions.md) for details.
+Directories, logic files, and components follow **kebab-case** (e.g., `get-manga-by-id.tsx`, `manga-items.tsx`), with `Loading.tsx` as a legacy PascalCase exception. See [naming_conventions.md](file:///d:/Personal%20Project/L903-Manga/planning/naming_conventions.md) for details.

@@ -1,7 +1,6 @@
 'use client'
 
 import React, { Suspense } from 'react'
-import { RecoilRoot } from 'recoil'
 import Link from 'next/link'
 import { FiGrid, FiHeart, FiStar, FiZap, FiCoffee, FiBook, FiTrendingUp, FiSmile, FiFeather } from 'react-icons/fi'
 import MangaByTagPage from '@/components/views/manga-by-tag-page'
@@ -100,8 +99,7 @@ const GENRES = [
 
 export default function GenresPage() {
   return (
-    <RecoilRoot>
-      <div className='min-h-screen bg-background pb-32'>
+    <div className='min-h-screen bg-background pb-32'>
         <div className='max-w-screen-2xl mx-auto px-4 md:px-12'>
           {/* Header */}
           <div className='mb-16 space-y-4'>
@@ -146,9 +144,8 @@ export default function GenresPage() {
                 </section>
               </Suspense>
             ))}
-          </div>
         </div>
       </div>
-    </RecoilRoot>
+    </div>
   )
 }

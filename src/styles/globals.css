@@ -8,10 +8,9 @@
   --primary: #38bdf8;
   --primary-foreground: #00354a;
   
-  /* Glassmorphism */
-  --glass-bg: rgba(15, 23, 42, 0.8);
+  /* Glassmorphism (lightweight surface without heavy backdrop-filter for low-end GPUs) */
+  --glass-bg: rgba(15, 23, 42, 0.92);
   --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-blur: 12px;
 }
 
 @theme inline {
@@ -37,9 +36,8 @@ body {
 
 .glass-card {
   background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border);
-  border-top-color: rgba(255, 255, 255, 0.15);
+  border-top-color: rgba(255, 255, 255, 0.14);
 }
 
 .neon-glow {

@@ -35,7 +35,16 @@ export default async function Home() {
   const ROMANCE = '423e2eae-a7a2-4a8b-ac03-a8351462d71d'
   const ACTION = '391b0423-d847-456f-aff0-8b0cfc03066b'
 
-  // Prefetch data on the server in parallel
+  // Prefetch data on the server in parallel without failing the whole page if one call fails
+  const settled = await Promise.allSettled([
+    fetchQuery(getNewManga({ limit: 5 })),
+    fetchQuery(getTopMangaByTagId({ limit: 12, offset: 0 })),
+    fetchQuery(getTopMangaByTagId({ limit: 12, offset: 0, publicationDemographic: 'shounen' })),
+    fetchQuery(getTopMangaByTagId({ id: [ROMANCE], offset: 0, limit: 4 })),
+    fetchQuery(getTopMangaByTagId({ id: [COMEDY], offset: 0, limit: 4 })),
+    fetchQuery(getTopMangaByTagId({ id: [ACTION], offset: 0, limit: 4 }))
+  ])
+
   const [
     newMangaData,
     recentlyUpdatedData,
@@ -43,17 +52,7 @@ export default async function Home() {
     romanceData,
     comedyData,
     actionData
-  ] = await Promise.all([
-    fetchQuery(getNewManga({ limit: 5 })),
-    fetchQuery(getTopMangaByTagId({ limit: 12, offset: 0 })),
-    fetchQuery(getTopMangaByTagId({ limit: 12, offset: 0, publicationDemographic: 'shounen' })),
-    fetchQuery(getTopMangaByTagId({ id: [ROMANCE], offset: 0, limit: 4 })),
-    fetchQuery(getTopMangaByTagId({ id: [COMEDY], offset: 0, limit: 4 })),
-    fetchQuery(getTopMangaByTagId({ id: [ACTION], offset: 0, limit: 4 }))
-  ]).catch(err => {
-    console.error('Failed to prefetch server side data', err)
-    return [undefined, undefined, undefined, undefined, undefined, undefined]
-  })
+  ] = settled.map(res => (res.status === 'fulfilled' ? res.value : undefined))
 
   return (
     <div className='min-h-screen bg-background pb-32'>
@@ -185,7 +184,7 @@ export default async function Home() {
                 <div className='space-y-10'>
                   <div className='space-y-4'>
                     <div className='flex items-center gap-3 text-blue-400'>
-                      <FaRocket className='animate-bounce' />
+                      <FaRocket />
                       <span className='text-[10px] font-black uppercase tracking-[0.4em]'>Dự Án L903 Manga</span>
                     </div>
                     <h2 className='text-4xl md:text-7xl font-display font-black text-white leading-[1.1]'>
@@ -248,9 +247,9 @@ export default async function Home() {
                 </div>
               </div>
 
-              {/* Decorative elements */}
-              <div className='absolute right-[-10%] top-[-20%] w-[50%] aspect-square bg-blue-600/10 blur-[120px] rounded-full group-hover:bg-blue-600/20 transition-all duration-1000' />
-              <div className='absolute left-[-10%] bottom-[-20%] w-[50%] aspect-square bg-purple-600/10 blur-[120px] rounded-full group-hover:bg-purple-600/20 transition-all duration-1000' />
+              {/* Decorative elements (radial gradients instead of heavy CSS blur-[120px]) */}
+              <div className='pointer-events-none absolute right-[-10%] top-[-20%] w-[50%] aspect-square bg-[radial-gradient(circle,rgba(37,99,235,0.14)_0%,transparent_70%)] rounded-full' />
+              <div className='pointer-events-none absolute left-[-10%] bottom-[-20%] w-[50%] aspect-square bg-[radial-gradient(circle,rgba(147,51,234,0.14)_0%,transparent_70%)] rounded-full' />
             </div>
           </section>
         </Suspense>
