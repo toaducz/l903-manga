@@ -21,8 +21,7 @@ Helper functions and logic-only files should be in kebab-case.
 - **Standard**: `format.ts`, `local-storage.ts`
 
 ### 4. React Components
-Component filenames in `src/components/` and `src/app/*/components/` follow **kebab-case** in practice (e.g., `manga-items.tsx`, `manga-chapter-list.tsx`, `reader-scroll-progress.tsx`), while exported symbol names use **PascalCase** (`MangaItems`, `MangaChaptersList`).
-- **Legacy Exception**: `src/components/status/Loading.tsx` uses PascalCase filename.
+Component filenames in `src/components/` and `src/app/*/components/` follow **kebab-case** (e.g., `manga-items.tsx`, `manga-chapter-list.tsx`, `reader-scroll-progress.tsx`, `loading.tsx`), while exported symbol names use **PascalCase** (`MangaItems`, `MangaChaptersList`, `Loading`).
 
 ### 5. Styles
 Global styles and CSS files follow **kebab-case** (`globals.css`).

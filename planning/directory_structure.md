@@ -37,4 +37,4 @@ This directory contains the "brain" of the application:
 - `api/`: Server-side API routes (`image/`, `proxy/`, `translate/`).
 
 ## Naming Convention Note
-Directories, logic files, and components follow **kebab-case** (e.g., `get-manga-by-id.tsx`, `manga-items.tsx`), with `Loading.tsx` as a legacy PascalCase exception. See [naming_conventions.md](file:///d:/Personal%20Project/L903-Manga/planning/naming_conventions.md) for details.
+Directories, logic files, and components follow **kebab-case** (e.g., `get-manga-by-id.tsx`, `manga-items.tsx`, `loading.tsx`). See [naming_conventions.md](file:///d:/Personal%20Project/L903-Manga/planning/naming_conventions.md) for details.
